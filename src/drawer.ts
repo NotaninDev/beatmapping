@@ -26,6 +26,16 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
     context.fillStyle = PALETTE[5];
     context.fillRect(center[0] - cellSize / 2, center[1] - cellSize / 2, cellSize, cellSize);
     context.drawImage(boostTexture, center[0] + cellSize / 2, center[1] - cellSize / 2);
+
+    const topLeft: [number, number] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2]
+    context.fillStyle = PALETTE[6];
+    for (let row = 0; row < board.size[0]; row++) {
+        for (let column = 0; column < board.size[1]; column++) {
+            if ((row + column) % 2 == 0) {
+                context.fillRect(topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+            }
+        }
+    }
 }
 
 export function updateDrawerConfig(config: { cellSize: number }) {
