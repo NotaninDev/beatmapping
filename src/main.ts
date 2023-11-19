@@ -1,4 +1,6 @@
 import GUI from "lil-gui"
+import { Board } from "./logic";
+import { updateDrawerConfig, PALETTE, drawBoard } from "./drawer";
 
 // Method 1 of loading URLs in Vite: use an import
 // import example_texture_url from "./images/example.png?url"
@@ -10,10 +12,12 @@ let example_texture_url = new URL(`./images/${texture_name}.png`, import.meta.ur
 // The variables we might want to tune while playing
 const CONFIG = {
   move_speed: 100,
+  cellSize: 100,
 };
 
 const gui = new GUI();
 gui.add(CONFIG, "move_speed", 10, 500);
+gui.add(CONFIG, "cellSize", 10, 500);
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -38,6 +42,7 @@ let example_texture = await imageFromUrl(example_texture_url);
 
 // actual game logic
 let player_pos = { x: 0, y: 0 };
+let board = new Board([3, 5]);
 
 let last_timestamp = 0;
 // main loop; game logic lives here
@@ -52,6 +57,9 @@ function every_frame(cur_timestamp: number) {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
   }
+
+  // update drawing config
+  updateDrawerConfig(CONFIG);
 
   // update
   if (input_state.up) {
@@ -68,8 +76,9 @@ function every_frame(cur_timestamp: number) {
   }
 
   // draw
-  ctx.fillStyle = "#5566aa"; // background color
+  ctx.fillStyle = PALETTE[1]; // background color
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawBoard(ctx, board, [canvas.width / 2, canvas.height / 2]);
 
   ctx.drawImage(example_texture, player_pos.x, player_pos.y);
 
