@@ -23,7 +23,6 @@ let boostTexture = await imageFromName('boost');
 export function drawBoard(context: CanvasRenderingContext2D, board: Board, center: [number, number]) {
     context.fillStyle = PALETTE[5];
     context.fillRect(center[0] - cellSize * board.size[1] / 2, center[1] - cellSize * board.size[0] / 2, cellSize * board.size[1], cellSize * board.size[0]);
-    context.drawImage(boostTexture, center[0] + cellSize / 2, center[1] - cellSize / 2);
 
     const topLeft: [number, number] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2]
     context.fillStyle = PALETTE[6];
@@ -31,6 +30,9 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
         for (let column = 0; column < board.size[1]; column++) {
             if ((row + column) % 2 == 0) {
                 context.fillRect(topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+            }
+            if (board.cells[row][column].boost) {
+                context.drawImage(boostTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
             }
         }
     }
