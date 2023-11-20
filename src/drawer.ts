@@ -15,16 +15,14 @@ function imageFromName(fileName: string): Promise<HTMLImageElement> {
 }
 
 let cellSize: number = 15;
-export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373",
-                "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec",
-                "bonus color"] as const;
+export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec", "bonus color"] as const;
 
 let boostTexture = await imageFromName('boost');
 
 
 export function drawBoard(context: CanvasRenderingContext2D, board: Board, center: [number, number]) {
     context.fillStyle = PALETTE[5];
-    context.fillRect(center[0] - cellSize / 2, center[1] - cellSize / 2, cellSize, cellSize);
+    context.fillRect(center[0] - cellSize * board.size[1] / 2, center[1] - cellSize * board.size[0] / 2, cellSize * board.size[1], cellSize * board.size[0]);
     context.drawImage(boostTexture, center[0] + cellSize / 2, center[1] - cellSize / 2);
 
     const topLeft: [number, number] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2]
