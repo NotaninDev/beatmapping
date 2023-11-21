@@ -44,11 +44,12 @@ let example_texture = await imageFromUrl(example_texture_url);
 let player_pos = { x: 0, y: 0 };
 
 // initialize the board
-let board = new Board([3, 5]);
-board.cells[1][2].boost = true
-board.cells[1][3].boost = true
+let board = new Board([4, 6]);
+board.cells[0][1].boost = true
 board.cells[0][2].boost = true
-board.cells[0][3].boost = true
+board.cells[1][1].boost = true
+board.cells[1][2].boost = true
+board.cells[1][4].boost = true
 board.cells[2][0].boost = true
 
 let last_timestamp = 0;
