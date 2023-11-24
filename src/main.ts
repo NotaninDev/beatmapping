@@ -1,6 +1,6 @@
 import GUI from "lil-gui"
-import { Board } from "./logic";
-import { updateDrawerConfig, PALETTE, drawBoard } from "./drawer";
+import { Board, Direction } from "./logic";
+import { PALETTE, drawBoard } from "./drawer";
 
 // Method 1 of loading URLs in Vite: use an import
 // import example_texture_url from "./images/example.png?url"
@@ -12,12 +12,10 @@ let example_texture_url = new URL(`./images/${texture_name}.png`, import.meta.ur
 // The variables we might want to tune while playing
 const CONFIG = {
   move_speed: 100,
-  cellSize: 100,
 };
 
 const gui = new GUI();
 gui.add(CONFIG, "move_speed", 10, 500);
-gui.add(CONFIG, "cellSize", 10, 500);
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -44,18 +42,27 @@ let example_texture = await imageFromUrl(example_texture_url);
 let player_pos = { x: 0, y: 0 };
 
 // initialize the board
-let board = new Board([4, 6]);
-board.cells[0][1].boost = true
-board.cells[0][2].boost = true
-board.cells[1][1].boost = true
-board.cells[1][2].boost = true
-board.cells[1][4].boost = true
-board.cells[2][0].boost = true
+let board = new Board([10, 10]);
+for (let i = 0; i < 10; i++) {
+  board.cells[0][i].mirrorUpRight = i % 2 == 0;
+  board.cells[9][i].mirrorUpRight = i % 2 == 1;
+  board.cells[i][0].mirrorUpRight = i % 2 == 0;
+  board.cells[i][9].mirrorUpRight = i % 2 == 1;
+}
+board.cells[9][4].mirrorUpRight = null;
+board.cells[9][4].generator = Direction.Up;
+board.cells[9][5].mirrorUpRight = null;
+board.cells[9][5].bell = 0;
 
-board.cells[0][0].mirrorUpRight = true;
-board.cells[0][4].mirrorUpRight = false;
-board.cells[1][2].mirrorUpRight = false;
-board.cells[2][3].mirrorUpRight = true;
+board.cells[1][2].boost = true
+board.cells[1][3].boost = true
+board.cells[2][2].boost = true
+board.cells[2][3].boost = true
+board.cells[3][5].boost = true
+board.cells[3][1].boost = true
+
+board.cells[2][3].mirrorUpRight = false;
+board.cells[3][4].mirrorUpRight = true;
 
 let last_timestamp = 0;
 // main loop; game logic lives here
@@ -71,8 +78,8 @@ function every_frame(cur_timestamp: number) {
     canvas.height = canvas.clientHeight;
   }
 
-  // update drawing config
-  updateDrawerConfig(CONFIG);
+  // // update drawing config
+  // updateDrawerConfig(CONFIG);
 
   // update
   if (input_state.up) {

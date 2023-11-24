@@ -14,7 +14,7 @@ function imageFromName(fileName: string): Promise<HTMLImageElement> {
     })
 }
 
-let cellSize: number = 15;
+let cellSize: number = 40;
 export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec", "bonus color"] as const;
 
 const boostTexture = await imageFromName('boost');
@@ -61,6 +61,6 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
     }
 }
 
-export function updateDrawerConfig(config: { cellSize: number }) {
-    cellSize = config.cellSize;
-}
+// export function updateDrawerConfig(config: { cellSize: number }) {
+//     cellSize = config.cellSize;
+// }
