@@ -29,10 +29,16 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
 
     // draw tiles
     context.fillStyle = PALETTE[6];
+    context.strokeStyle = PALETTE[7];
+    context.lineWidth = 1.8;
     for (let row = 0; row < board.size[0]; row++) {
         for (let column = 0; column < board.size[1]; column++) {
+            let onEdge = row == 0 || row == board.size[0] - 1 || column == 0 || column == board.size[1] - 1;
             if ((row + column) % 2 == 0) {
                 context.fillRect(topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+            }
+            if (onEdge) {
+                context.strokeRect(topLeft[0] + cellSize * (column + 0.12), topLeft[1] + cellSize * (row + 0.12), cellSize * 0.76, cellSize * 0.76);
             }
             if (board.cells[row][column].boost) {
                 context.drawImage(boostTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
