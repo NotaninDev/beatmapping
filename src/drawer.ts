@@ -44,7 +44,18 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
     for (let row = 0; row < board.size[0]; row++) {
         for (let column = 0; column < board.size[1]; column++) {
             if (board.cells[row][column].hasMirror()) {
-                context.drawImage(mirrorTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+                if (board.cells[row][column].mirrorUpRight) {
+                    context.drawImage(mirrorTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+                }
+                else {
+                    context.save();
+                    let x = topLeft[0] + cellSize * (column + 0.5), y = topLeft[1] + cellSize * (row + 0.5);
+                    context.translate(x, y);
+                    context.rotate(Math.PI / 2);
+                    context.translate(-x, -y);
+                    context.drawImage(mirrorTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+                    context.restore();
+                }
             }
         }
     }
