@@ -18,6 +18,7 @@ let cellSize: number = 15;
 export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec", "bonus color"] as const;
 
 let boostTexture = await imageFromName('boost');
+let mirrorTexture = await imageFromName('mirror');
 
 
 export function drawBoard(context: CanvasRenderingContext2D, board: Board, center: [number, number]) {
@@ -25,6 +26,8 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
     context.fillRect(center[0] - cellSize * board.size[1] / 2, center[1] - cellSize * board.size[0] / 2, cellSize * board.size[1], cellSize * board.size[0]);
 
     const topLeft: [number, number] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2]
+
+    // draw tiles
     context.fillStyle = PALETTE[6];
     for (let row = 0; row < board.size[0]; row++) {
         for (let column = 0; column < board.size[1]; column++) {
@@ -33,6 +36,15 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
             }
             if (board.cells[row][column].boost) {
                 context.drawImage(boostTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+            }
+        }
+    }
+
+    // draw mirrors
+    for (let row = 0; row < board.size[0]; row++) {
+        for (let column = 0; column < board.size[1]; column++) {
+            if (board.cells[row][column].hasMirror()) {
+                context.drawImage(mirrorTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
             }
         }
     }

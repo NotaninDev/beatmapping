@@ -7,7 +7,7 @@ enum Direction {
 
 class Cell {
     boost: boolean = false;
-    mirrorUpRight: null | boolean = false;
+    mirrorUpRight: null | boolean = null;
     bell: null | number = null;
     generator: null | Direction = null;
 

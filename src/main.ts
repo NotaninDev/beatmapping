@@ -52,6 +52,11 @@ board.cells[1][2].boost = true
 board.cells[1][4].boost = true
 board.cells[2][0].boost = true
 
+board.cells[0][0].mirrorUpRight = true;
+board.cells[0][4].mirrorUpRight = false;
+board.cells[1][2].mirrorUpRight = false;
+board.cells[2][3].mirrorUpRight = true;
+
 let last_timestamp = 0;
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
