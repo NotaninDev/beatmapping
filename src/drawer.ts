@@ -17,8 +17,8 @@ function imageFromName(fileName: string): Promise<HTMLImageElement> {
 let cellSize: number = 15;
 export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec", "bonus color"] as const;
 
-let boostTexture = await imageFromName('boost');
-let mirrorTexture = await imageFromName('mirror');
+const boostTexture = await imageFromName('boost');
+const mirrorTexture = await imageFromName('mirror');
 
 
 export function drawBoard(context: CanvasRenderingContext2D, board: Board, center: [number, number]) {
