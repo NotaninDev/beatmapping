@@ -7,12 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIXME: game title</title>
     <style>
+        @font-face {
+            font-family: "Ubuntu M";
+            src: url("./fonts/ubuntu-font-family-0.83/Ubuntu-M.ttf");
+        }
         body {
             width: 100%;
             height: 100%;
             position: absolute;
             margin: 0;
             overscroll-behavior: contain;
+            font-family: "Ubuntu M";
         }
 
         #game_canvas {
@@ -24,11 +29,11 @@
         #loading_screen {
             /* FIXME: customize loading screen */
             transition: .4s;
-            background-color: #b0b0b0;
+            background-color: #333346;
             font-size: larger;
             text-align: center;
             line-height: 90vh;
-            color: #000000;
+            color: #c1c1d2;
 
             position: absolute;
             width: 100%;
