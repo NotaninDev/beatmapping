@@ -96,7 +96,7 @@ function every_frame(cur_timestamp: number) {
   }
 
   // draw
-  ctx.fillStyle = PALETTE[1]; // background color
+  ctx.fillStyle = PALETTE[5]; // background color
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawBoard(ctx, board, [canvas.width / 2, canvas.height / 2]);
 
