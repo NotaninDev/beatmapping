@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -34,18 +34,6 @@ export function updateMousePosition(newPosition: number[]) {
 
 
 export let playingMap: boolean = false, playingSong: boolean = false;
-export function playMap() {
-    playingMap = true;
-    playingSong = false;
-}
-export function playSong() {
-    playingSong = true;
-    playingMap = false;
-}
-export function pauseAnySong() {
-    playingMap = false;
-    playingSong = false;
-}
 export let timestepStart: number = 0;
 
 
@@ -75,14 +63,14 @@ board.cells[3][4].mirrorUpRight = true;
 
 initializeDrawer(40, board);
 
-let last_timestamp = 0;
+let timestepNow = 0;
 let boardCenter = getBoardCenter();
 let uiCenter = getUiCenter();
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
   // in seconds
-  let delta_time = (cur_timestamp - last_timestamp) / 1000;
-  last_timestamp = cur_timestamp;
+  let delta_time = (cur_timestamp - timestepNow) / 1000;
+  timestepNow = cur_timestamp;
 
   // handle resize
   if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
@@ -107,9 +95,18 @@ function every_frame(cur_timestamp: number) {
 
 document.addEventListener("mousemove", event => {
   updateMousePosition(getMousePositionOnBoard(event, boardCenter));
+  updateUiHoverState(event, uiCenter);
 });
 document.addEventListener("mousedown", event => {
-  updateMousePosition(getMousePositionOnBoard(event, boardCenter));
+  if (onMapPlay && !playingSong) {
+    playingMap = !playingMap;
+  }
+  if (onSongPlay && !playingMap) {
+    playingSong = !playingSong;
+    if (playingSong) {
+      timestepStart = timestepNow;
+    }
+  }
 });
 
 // The loading screen is done in HTML so it loads instantly

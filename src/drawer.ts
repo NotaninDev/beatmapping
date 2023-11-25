@@ -1,4 +1,4 @@
-import { Board, mousePositionOnBoard } from "./internal";
+import { Board, mousePositionOnBoard, playingMap, playingSong } from "./internal";
 
 function imageFromName(fileName: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
@@ -107,22 +107,31 @@ export function getMousePositionOnBoard(event: MouseEvent, center: number[]) {
 
 export function drawUi(context: CanvasRenderingContext2D, center: number[], timestepGlobal: number) {
     let topLeft: number[] = [center[0] - uiSize - uiPadding / 2, center[1] - uiSize / 2];
-    drawUiSlice(context, topLeft, [0, 0]);
-    drawUiSlice(context, topLeft, [0, 2]);
-    drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [0, 0]);
-    drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [0, 1]);
+    drawUiSlice(context, topLeft, [playingSong ? 1 : (onMapPlay ? 2 : 0), 0]);
+    drawUiSlice(context, topLeft, [playingSong ? 1 : (onMapPlay ? 2 : 0), playingMap ? 3 : 2]);
+    drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [playingMap ? 1 : (onSongPlay ? 2 : 0), 0]);
+    drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [playingMap ? 1 : (onSongPlay ? 2 : 0), 1], playingSong ? timestepGlobal / 1000 * 0.6 : undefined);
 }
 
 // the format of sheetCoords is [row, column]
 function drawUiSlice(context: CanvasRenderingContext2D, topLeft: number[], sheetCoords: number[], angle?: number) {
     if (angle !== undefined) {
         context.save();
-        context.translate(topLeft[0], topLeft[1]);
+        context.translate(topLeft[0] + uiSize / 2, topLeft[1] + uiSize / 2);
         context.rotate(angle);
-        context.translate(-topLeft[0], -topLeft[1]);
+        context.translate(-topLeft[0] - uiSize / 2, -topLeft[1] - uiSize / 2);
     }
     context.drawImage(UiTexture, 192 * sheetCoords[1], 192 * sheetCoords[0], 192, 192, topLeft[0], topLeft[1], uiSize, uiSize);
     if (angle !== undefined) {
         context.restore();
     }
+}
+
+export let onMapPlay: boolean = false, onSongPlay: boolean = false;
+// the return value is [row, column]
+export function updateUiHoverState(event: MouseEvent, center: number[]) {
+    let uiCenter: number[] = [center[0] - (uiSize + uiPadding) / 2, center[1]];
+    onMapPlay = Math.sqrt(Math.pow(event.offsetX - uiCenter[0], 2) + Math.pow(event.offsetY - uiCenter[1], 2)) < uiSize / 2;
+    uiCenter = [center[0] + (uiSize + uiPadding) / 2, center[1]];
+    onSongPlay = Math.sqrt(Math.pow(event.offsetX - uiCenter[0], 2) + Math.pow(event.offsetY - uiCenter[1], 2)) < uiSize / 2;
 }
