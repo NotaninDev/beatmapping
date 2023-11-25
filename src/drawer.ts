@@ -27,11 +27,13 @@ let cellSize: number;
 let board: Board;
 let uiSize: number;
 let uiPadding: number;
+let toolboxPadding: number;
 export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
     cellSize = cellSizeAttr;
     board = boardAttr;
     uiSize = cellSize * 1.5;
     uiPadding = cellSize * 0.2
+    toolboxPadding = cellSize * 0.4
 }
 
 
@@ -134,4 +136,39 @@ export function updateUiHoverState(event: MouseEvent, center: number[]) {
     onMapPlay = Math.sqrt(Math.pow(event.offsetX - uiCenter[0], 2) + Math.pow(event.offsetY - uiCenter[1], 2)) < uiSize / 2;
     uiCenter = [center[0] + (uiSize + uiPadding) / 2, center[1]];
     onSongPlay = Math.sqrt(Math.pow(event.offsetX - uiCenter[0], 2) + Math.pow(event.offsetY - uiCenter[1], 2)) < uiSize / 2;
+}
+
+export let toolBoost: boolean = true;
+export function drawToolbox(context: CanvasRenderingContext2D, center: number[]) {
+    context.fillStyle = PALETTE[8];
+    context.strokeStyle = PALETTE[8];
+    let topLeft: number[] = [center[0] - cellSize - toolboxPadding / 2, center[1] - cellSize / 2];
+    if (!toolBoost) {
+        context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+    }
+    else if (onMirrorTool) {
+        context.strokeRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+    }
+    context.drawImage(mirrorTexture, topLeft[0], topLeft[1], cellSize, cellSize);
+
+    topLeft = [center[0] + toolboxPadding / 2, center[1] - cellSize / 2];
+    if (toolBoost) {
+        context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+    }
+    else if (onBoostTool) {
+        context.strokeRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+    }
+    context.drawImage(boostTexture, topLeft[0], topLeft[1], cellSize, cellSize);
+
+    // drawUiSlice(context, topLeft, [playingSong ? 1 : (onMapPlay ? 2 : 0), 0]);
+    // drawUiSlice(context, topLeft, [playingSong ? 1 : (onMapPlay ? 2 : 0), playingMap ? 3 : 2]);
+    // drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [playingMap ? 1 : (onSongPlay ? 2 : 0), 0]);
+    // drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [playingMap ? 1 : (onSongPlay ? 2 : 0), 1], playingSong ? timestepGlobal / 1000 * 0.6 : undefined);
+}
+
+export let onMirrorTool: boolean = false, onBoostTool: boolean = false;
+// the return value is [row, column]
+export function updateToolHoverState(event: MouseEvent, center: number[]) {
+    onMirrorTool = event.offsetX >= center[0] - cellSize - toolboxPadding * (0.5 + 1 / 3) && event.offsetX <= center[0] - toolboxPadding * (0.5 - 1 / 3) && event.offsetY >= center[1] - cellSize / 2 - toolboxPadding / 3 && event.offsetY <= center[1] + cellSize / 2 + toolboxPadding / 3;
+    onBoostTool = event.offsetX >= center[0] + toolboxPadding * (0.5 - 1 / 3) && event.offsetX <= center[0] + cellSize + toolboxPadding * (0.5 + 1 / 3) && event.offsetY >= center[1] - cellSize / 2 - toolboxPadding / 3 && event.offsetY <= center[1] + cellSize / 2 + toolboxPadding / 3;
 }

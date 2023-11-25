@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -23,6 +23,9 @@ function getBoardCenter() {
 }
 function getUiCenter() {
   return [canvas.width / 2, canvas.height * 0.93];
+}
+function getToolboxCenter() {
+  return [canvas.width * 0.3, canvas.height * 0.93];
 }
 
 
@@ -59,6 +62,7 @@ initializeDrawer(40, board);
 let timestepNow = 0;
 let boardCenter = getBoardCenter();
 let uiCenter = getUiCenter();
+let toolboxCenter = getToolboxCenter();
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
   // in seconds
@@ -72,6 +76,7 @@ function every_frame(cur_timestamp: number) {
     canvas.height = canvas.clientHeight;
     boardCenter = getBoardCenter();
     uiCenter = getUiCenter();
+    toolboxCenter = getToolboxCenter();
   }
 
   // update
@@ -82,6 +87,7 @@ function every_frame(cur_timestamp: number) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawBoard(ctx, boardCenter, cur_timestamp);
   drawUi(ctx, uiCenter, cur_timestamp - timestepStart);
+  drawToolbox(ctx, toolboxCenter);
 
   requestAnimationFrame(every_frame);
 }
@@ -89,6 +95,7 @@ function every_frame(cur_timestamp: number) {
 document.addEventListener("mousemove", event => {
   updateMousePosition(getMousePositionOnBoard(event, boardCenter));
   updateUiHoverState(event, uiCenter);
+  updateToolHoverState(event, toolboxCenter);
 });
 document.addEventListener("mousedown", event => {
   if (board.inMap(mousePositionOnBoard) && !playingMap) {
