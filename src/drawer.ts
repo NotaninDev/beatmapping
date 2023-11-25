@@ -62,7 +62,7 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
         }
     }
     context.strokeStyle = PALETTE[8];
-    if (board.inMap(mousePositionOnBoard)) {
+    if (board.inMap(mousePositionOnBoard) && !playingMap) {
         context.strokeRect(topLeft[0] + cellSize * (mousePositionOnBoard[1] + 0.12), topLeft[1] + cellSize * (mousePositionOnBoard[0] + 0.12), cellSize * 0.76, cellSize * 0.76);
     }
 
@@ -140,13 +140,13 @@ export function updateUiHoverState(event: MouseEvent, center: number[]) {
 
 export let toolIsBoost: boolean = true;
 export function drawToolbox(context: CanvasRenderingContext2D, center: number[]) {
-    context.fillStyle = PALETTE[8];
+    context.fillStyle = PALETTE[playingMap ? 6 : 8];
     context.strokeStyle = PALETTE[8];
     let topLeft: number[] = [center[0] - cellSize - toolboxPadding / 2, center[1] - cellSize / 2];
     if (!toolIsBoost) {
         context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
     }
-    else if (onMirrorTool) {
+    else if (onMirrorTool && !playingMap) {
         context.strokeRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
     }
     context.drawImage(mirrorTexture, topLeft[0], topLeft[1], cellSize, cellSize);
@@ -155,7 +155,7 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     if (toolIsBoost) {
         context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
     }
-    else if (onBoostTool) {
+    else if (onBoostTool && !playingMap) {
         context.strokeRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
     }
     context.drawImage(boostTexture, topLeft[0], topLeft[1], cellSize, cellSize);
