@@ -1,20 +1,4 @@
-import GUI from "lil-gui"
 import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard } from "./internal";
-
-// Method 1 of loading URLs in Vite: use an import
-// import example_texture_url from "./images/example.png?url"
-
-// Method 2: https://vitejs.dev/guide/assets.html#new-url-url-import-meta-url
-let texture_name = "example";
-let example_texture_url = new URL(`./images/${texture_name}.png`, import.meta.url).href;
-
-// The variables we might want to tune while playing
-const CONFIG = {
-  move_speed: 100,
-};
-
-const gui = new GUI();
-gui.add(CONFIG, "move_speed", 10, 500);
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -65,12 +49,6 @@ export function pauseAnySong() {
 export let timestepStart: number = 0;
 
 
-// we can use top level await :)
-let example_texture = await imageFromUrl(example_texture_url);
-
-// actual game logic
-let player_pos = { x: 0, y: 0 };
-
 // initialize the board
 let board = new Board([10, 10]);
 for (let i = 0; i < 10; i++) {
@@ -116,18 +94,7 @@ function every_frame(cur_timestamp: number) {
   }
 
   // update
-  if (input_state.up) {
-    player_pos.y -= delta_time * CONFIG.move_speed;
-  }
-  if (input_state.down) {
-    player_pos.y += delta_time * CONFIG.move_speed;
-  }
-  if (input_state.right) {
-    player_pos.x += delta_time * CONFIG.move_speed;
-  }
-  if (input_state.left) {
-    player_pos.x -= delta_time * CONFIG.move_speed;
-  }
+  // to do: implement this
 
   // draw
   ctx.fillStyle = PALETTE[5]; // background color
@@ -135,71 +102,8 @@ function every_frame(cur_timestamp: number) {
   drawBoard(ctx, boardCenter, cur_timestamp);
   drawUi(ctx, uiCenter, cur_timestamp - timestepStart);
 
-  ctx.drawImage(example_texture, player_pos.x, player_pos.y);
-
-  ctx.fillStyle = "cyan";
-  ctx.fillRect(10, 10, player_pos.x - 10, player_pos.y - 10);
-
   requestAnimationFrame(every_frame);
 }
-
-// vanilla input handling
-let input_state = {
-  up: false,
-  down: false,
-  left: false,
-  right: false,
-}
-
-document.addEventListener("keydown", event => {
-  if (event.repeat) return;
-  // this repetition can be removed/abstracted; left as an exercise to the reader
-  switch (event.code) {
-    case "ArrowUp":
-    case "KeyW":
-      input_state.up = true;
-      break;
-    case "ArrowDown":
-    case "KeyS":
-      input_state.down = true;
-      break;
-    case "ArrowLeft":
-    case "KeyA":
-      input_state.left = true;
-      break;
-    case "ArrowRight":
-    case "KeyD":
-      input_state.right = true;
-      break;
-    default:
-      break;
-  }
-});
-
-document.addEventListener("keyup", event => {
-  // if you remove the repetition in "keydown", you also avoid this repetition
-  // and avoid potential desync bugs
-  switch (event.code) {
-    case "ArrowUp":
-    case "KeyW":
-      input_state.up = false;
-      break;
-    case "ArrowDown":
-    case "KeyS":
-      input_state.down = false;
-      break;
-    case "ArrowLeft":
-    case "KeyA":
-      input_state.left = false;
-      break;
-    case "ArrowRight":
-    case "KeyD":
-      input_state.right = false;
-      break;
-    default:
-      break;
-  }
-});
 
 document.addEventListener("mousemove", event => {
   updateMousePosition(getMousePositionOnBoard(event, boardCenter));
