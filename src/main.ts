@@ -51,13 +51,6 @@ board.cells[9][5].mirrorUpRight = null;
 board.cells[9][5].bell = 0;
 board.pulsePosition = [4, 9];
 
-board.cells[1][2].boost = true
-board.cells[1][3].boost = true
-board.cells[2][2].boost = true
-board.cells[2][3].boost = true
-board.cells[3][5].boost = true
-board.cells[3][1].boost = true
-
 board.cells[2][3].mirrorUpRight = false;
 board.cells[3][4].mirrorUpRight = true;
 
@@ -98,6 +91,9 @@ document.addEventListener("mousemove", event => {
   updateUiHoverState(event, uiCenter);
 });
 document.addEventListener("mousedown", event => {
+  if (board.inMap(mousePositionOnBoard) && !playingMap) {
+    board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]].boost = !board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]].boost;
+  }
   if (onMapPlay && !playingSong) {
     playingMap = !playingMap;
   }

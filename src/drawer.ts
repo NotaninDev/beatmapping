@@ -60,7 +60,7 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
         }
     }
     context.strokeStyle = PALETTE[8];
-    if (mousePositionOnBoard[1] > 0 && mousePositionOnBoard[1] < board.size[1] - 1 && mousePositionOnBoard[0] > 0 && mousePositionOnBoard[0] < board.size[0] - 1) {
+    if (board.inMap(mousePositionOnBoard)) {
         context.strokeRect(topLeft[0] + cellSize * (mousePositionOnBoard[1] + 0.12), topLeft[1] + cellSize * (mousePositionOnBoard[0] + 0.12), cellSize * 0.76, cellSize * 0.76);
     }
 
