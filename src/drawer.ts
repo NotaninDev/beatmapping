@@ -26,10 +26,12 @@ const UiTexture = await imageFromName('UI');
 let cellSize: number;
 let board: Board;
 let uiSize: number;
+let uiPadding: number;
 export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
     cellSize = cellSizeAttr;
     board = boardAttr;
     uiSize = cellSize * 1.5;
+    uiPadding = cellSize * 0.2
 }
 
 
@@ -104,11 +106,11 @@ export function getMousePositionOnBoard(event: MouseEvent, center: number[]) {
 }
 
 export function drawUi(context: CanvasRenderingContext2D, center: number[], timestepGlobal: number) {
-    let topLeft: number[] = [center[0] - uiSize * 1.1, center[1] - uiSize * 0.5];
+    let topLeft: number[] = [center[0] - uiSize - uiPadding / 2, center[1] - uiSize / 2];
     drawUiSlice(context, topLeft, [0, 0]);
     drawUiSlice(context, topLeft, [0, 2]);
-    drawUiSlice(context, [topLeft[0] + uiSize * 1.2, topLeft[1]], [0, 0]);
-    drawUiSlice(context, [topLeft[0] + uiSize * 1.2, topLeft[1]], [0, 1]);
+    drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [0, 0]);
+    drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [0, 1]);
 }
 
 // the format of sheetCoords is [row, column]
