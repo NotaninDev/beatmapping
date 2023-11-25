@@ -22,6 +22,7 @@ class Cell {
 export class Board {
     size: [number, number]; // row, column
     cells: Cell[][];
+    pulsePosition: [number, number] = [0, 0];
 
     constructor(size: [number, number]) {
         this.size = size;

@@ -53,6 +53,7 @@ board.cells[9][4].mirrorUpRight = null;
 board.cells[9][4].generator = Direction.Up;
 board.cells[9][5].mirrorUpRight = null;
 board.cells[9][5].bell = 0;
+board.pulsePosition = [4, 9];
 
 board.cells[1][2].boost = true
 board.cells[1][3].boost = true
@@ -98,7 +99,7 @@ function every_frame(cur_timestamp: number) {
   // draw
   ctx.fillStyle = PALETTE[5]; // background color
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  drawBoard(ctx, board, [canvas.width / 2, canvas.height / 2]);
+  drawBoard(ctx, board, [canvas.width / 2, canvas.height / 2], cur_timestamp);
 
   ctx.drawImage(example_texture, player_pos.x, player_pos.y);
 
