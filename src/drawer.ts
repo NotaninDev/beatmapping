@@ -138,12 +138,12 @@ export function updateUiHoverState(event: MouseEvent, center: number[]) {
     onSongPlay = Math.sqrt(Math.pow(event.offsetX - uiCenter[0], 2) + Math.pow(event.offsetY - uiCenter[1], 2)) < uiSize / 2;
 }
 
-export let toolBoost: boolean = true;
+export let toolIsBoost: boolean = true;
 export function drawToolbox(context: CanvasRenderingContext2D, center: number[]) {
     context.fillStyle = PALETTE[8];
     context.strokeStyle = PALETTE[8];
     let topLeft: number[] = [center[0] - cellSize - toolboxPadding / 2, center[1] - cellSize / 2];
-    if (!toolBoost) {
+    if (!toolIsBoost) {
         context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
     }
     else if (onMirrorTool) {
@@ -152,7 +152,7 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     context.drawImage(mirrorTexture, topLeft[0], topLeft[1], cellSize, cellSize);
 
     topLeft = [center[0] + toolboxPadding / 2, center[1] - cellSize / 2];
-    if (toolBoost) {
+    if (toolIsBoost) {
         context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
     }
     else if (onBoostTool) {
@@ -171,4 +171,8 @@ export let onMirrorTool: boolean = false, onBoostTool: boolean = false;
 export function updateToolHoverState(event: MouseEvent, center: number[]) {
     onMirrorTool = event.offsetX >= center[0] - cellSize - toolboxPadding * (0.5 + 1 / 3) && event.offsetX <= center[0] - toolboxPadding * (0.5 - 1 / 3) && event.offsetY >= center[1] - cellSize / 2 - toolboxPadding / 3 && event.offsetY <= center[1] + cellSize / 2 + toolboxPadding / 3;
     onBoostTool = event.offsetX >= center[0] + toolboxPadding * (0.5 - 1 / 3) && event.offsetX <= center[0] + cellSize + toolboxPadding * (0.5 + 1 / 3) && event.offsetY >= center[1] - cellSize / 2 - toolboxPadding / 3 && event.offsetY <= center[1] + cellSize / 2 + toolboxPadding / 3;
+}
+
+export function switchTool() {
+    toolIsBoost = !toolIsBoost;
 }

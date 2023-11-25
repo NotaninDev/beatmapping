@@ -36,6 +36,6 @@ export class Board {
     }
 
     inMap(position: number[]) {
-        return position[0] > 0 && position[0] < this.size[0] - 1 && position[1] > 0 && position[1] < this.size[1] - 1
+        return position[0] > 0 && position[0] < this.size[0] - 1 && position[1] > 0 && position[1] < this.size[1] - 1;
     }
 }
