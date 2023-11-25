@@ -1,6 +1,5 @@
 import GUI from "lil-gui"
-import { Board, Direction, updateMousePosition } from "./logic";
-import { PALETTE, initializeDrawer, drawBoard, getMousePositionOnBoard } from "./drawer";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard } from "./internal";
 
 // Method 1 of loading URLs in Vite: use an import
 // import example_texture_url from "./images/example.png?url"
@@ -35,6 +34,37 @@ export function imageFromUrl(url: string): Promise<HTMLImageElement> {
   })
 }
 
+function getBoardCenter() {
+  return [canvas.width / 2, canvas.height / 2];
+}
+function getUiCenter() {
+  return [canvas.width / 2, canvas.height * 0.93];
+}
+
+
+
+export let mousePositionOnBoard: number[] = [0, 0];
+export function updateMousePosition(newPosition: number[]) {
+    mousePositionOnBoard = newPosition;
+}
+
+
+export let playingMap: boolean = false, playingSong: boolean = false;
+export function playMap() {
+    playingMap = true;
+    playingSong = false;
+}
+export function playSong() {
+    playingSong = true;
+    playingMap = false;
+}
+export function pauseAnySong() {
+    playingMap = false;
+    playingSong = false;
+}
+export let timestepStart: number = 0;
+
+
 // we can use top level await :)
 let example_texture = await imageFromUrl(example_texture_url);
 
@@ -68,6 +98,8 @@ board.cells[3][4].mirrorUpRight = true;
 initializeDrawer(40, board);
 
 let last_timestamp = 0;
+let boardCenter = getBoardCenter();
+let uiCenter = getUiCenter();
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
   // in seconds
@@ -79,6 +111,8 @@ function every_frame(cur_timestamp: number) {
     // .clientWidth is the element's real size, .width is a canvas-specific property: the rendering size
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
+    boardCenter = getBoardCenter();
+    uiCenter = getUiCenter();
   }
 
   // // update drawing config
@@ -101,7 +135,8 @@ function every_frame(cur_timestamp: number) {
   // draw
   ctx.fillStyle = PALETTE[5]; // background color
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  drawBoard(ctx, [canvas.width / 2, canvas.height / 2], cur_timestamp);
+  drawBoard(ctx, boardCenter, cur_timestamp);
+  drawUi(ctx, uiCenter, cur_timestamp - timestepStart);
 
   ctx.drawImage(example_texture, player_pos.x, player_pos.y);
 
@@ -170,10 +205,10 @@ document.addEventListener("keyup", event => {
 });
 
 document.addEventListener("mousemove", event => {
-  updateMousePosition(getMousePositionOnBoard(event, [canvas.width / 2, canvas.height / 2]));
+  updateMousePosition(getMousePositionOnBoard(event, boardCenter));
 });
 document.addEventListener("mousedown", event => {
-  updateMousePosition(getMousePositionOnBoard(event, [canvas.width / 2, canvas.height / 2]));
+  updateMousePosition(getMousePositionOnBoard(event, boardCenter));
 });
 
 // The loading screen is done in HTML so it loads instantly

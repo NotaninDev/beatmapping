@@ -35,8 +35,3 @@ export class Board {
         }
     }
 }
-
-export let mousePositionOnBoard: number[] = [0, 0];
-export function updateMousePosition(newPosition: number[]) {
-    mousePositionOnBoard = newPosition;
-}

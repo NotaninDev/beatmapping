@@ -1,4 +1,4 @@
-import { Board, mousePositionOnBoard } from "./logic";
+import { Board, mousePositionOnBoard } from "./internal";
 
 function imageFromName(fileName: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
@@ -19,13 +19,17 @@ export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "
 const boostTexture = await imageFromName('boost');
 const mirrorTexture = await imageFromName('mirror');
 const pulseTextures = [await imageFromName('pulse cw'), await imageFromName('pulse ccw'), await imageFromName('pulse core')];
+const UiTexture = await imageFromName('UI');
+
 
 
 let cellSize: number;
 let board: Board;
+let uiSize: number;
 export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
     cellSize = cellSizeAttr;
     board = boardAttr;
+    uiSize = cellSize * 1.5;
 }
 
 
@@ -97,6 +101,28 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
 export function getMousePositionOnBoard(event: MouseEvent, center: number[]) {
     const topLeft: number[] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2];
     return [Math.floor((event.offsetY - topLeft[1]) / cellSize), Math.floor((event.offsetX - topLeft[0]) / cellSize)];
+}
+
+export function drawUi(context: CanvasRenderingContext2D, center: number[], timestepGlobal: number) {
+    let topLeft: number[] = [center[0] - uiSize * 1.1, center[1] - uiSize * 0.5];
+    drawUiSlice(context, topLeft, [0, 0]);
+    drawUiSlice(context, topLeft, [0, 2]);
+    drawUiSlice(context, [topLeft[0] + uiSize * 1.2, topLeft[1]], [0, 0]);
+    drawUiSlice(context, [topLeft[0] + uiSize * 1.2, topLeft[1]], [0, 1]);
+}
+
+// the format of sheetCoords is [row, column]
+function drawUiSlice(context: CanvasRenderingContext2D, topLeft: number[], sheetCoords: number[], angle?: number) {
+    if (angle !== undefined) {
+        context.save();
+        context.translate(topLeft[0], topLeft[1]);
+        context.rotate(angle);
+        context.translate(-topLeft[0], -topLeft[1]);
+    }
+    context.drawImage(UiTexture, 192 * sheetCoords[1], 192 * sheetCoords[0], 192, 192, topLeft[0], topLeft[1], uiSize, uiSize);
+    if (angle !== undefined) {
+        context.restore();
+    }
 }
 
 // export function updateDrawerConfig(config: { cellSize: number }) {
