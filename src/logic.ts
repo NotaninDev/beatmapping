@@ -20,11 +20,11 @@ class Cell {
 }
 
 export class Board {
-    size: [number, number]; // row, column
+    size: number[]; // row, column
     cells: Cell[][];
-    pulsePosition: [number, number] = [0, 0];
+    pulsePosition: number[] = [0, 0];
 
-    constructor(size: [number, number]) {
+    constructor(size: number[]) {
         this.size = size;
         this.cells = [];
         for (let i = 0; i < size[0]; i++) {
@@ -34,4 +34,9 @@ export class Board {
             }
         }
     }
+}
+
+export let mousePositionOnBoard: number[] = [0, 0];
+export function updateMousePosition(newPosition: number[]) {
+    mousePositionOnBoard = newPosition;
 }

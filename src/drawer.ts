@@ -1,4 +1,4 @@
-import { Board } from "./logic";
+import { Board, mousePositionOnBoard } from "./logic";
 
 function imageFromName(fileName: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
@@ -14,19 +14,26 @@ function imageFromName(fileName: string): Promise<HTMLImageElement> {
     })
 }
 
-let cellSize: number = 40;
-export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec", "bonus color"] as const;
+export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "#a6a6bf", "#c1c1d2", "#e6e6ec", "#efaa1b"] as const;
 
 const boostTexture = await imageFromName('boost');
 const mirrorTexture = await imageFromName('mirror');
 const pulseTextures = [await imageFromName('pulse cw'), await imageFromName('pulse ccw'), await imageFromName('pulse core')];
 
 
-export function drawBoard(context: CanvasRenderingContext2D, board: Board, center: [number, number], timestepGlobal: number) {
-    context.fillStyle = PALETTE[5];
-    context.fillRect(center[0] - cellSize * board.size[1] / 2, center[1] - cellSize * board.size[0] / 2, cellSize * board.size[1], cellSize * board.size[0]);
+let cellSize: number;
+let board: Board;
+export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
+    cellSize = cellSizeAttr;
+    board = boardAttr;
+}
 
-    const topLeft: [number, number] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2]
+
+export function drawBoard(context: CanvasRenderingContext2D, center: number[], timestepGlobal: number) {
+    const topLeft: number[] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2];
+
+    context.fillStyle = PALETTE[5];
+    context.fillRect(topLeft[0], topLeft[1], cellSize * board.size[1], cellSize * board.size[0]);
 
     // draw tiles
     context.fillStyle = PALETTE[6];
@@ -45,6 +52,10 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
                 context.drawImage(boostTexture, topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
             }
         }
+    }
+    context.strokeStyle = PALETTE[8];
+    if (mousePositionOnBoard[1] > 0 && mousePositionOnBoard[1] < board.size[1] - 1 && mousePositionOnBoard[0] > 0 && mousePositionOnBoard[0] < board.size[0] - 1) {
+        context.strokeRect(topLeft[0] + cellSize * (mousePositionOnBoard[1] + 0.12), topLeft[1] + cellSize * (mousePositionOnBoard[0] + 0.12), cellSize * 0.76, cellSize * 0.76);
     }
 
     // draw mirrors
@@ -80,6 +91,12 @@ export function drawBoard(context: CanvasRenderingContext2D, board: Board, cente
     context.drawImage(pulseTextures[1], topLeft[0] + cellSize * (board.pulsePosition[0] - 0.5), topLeft[1] + cellSize * (board.pulsePosition[1] - 0.5), cellSize * 2, cellSize * 2);
     context.restore();
     context.drawImage(pulseTextures[2], topLeft[0] + cellSize * (board.pulsePosition[0] - 0.5), topLeft[1] + cellSize * (board.pulsePosition[1] - 0.5), cellSize * 2, cellSize * 2);
+}
+
+// the return value is [row, column]
+export function getMousePositionOnBoard(event: MouseEvent, center: number[]) {
+    const topLeft: number[] = [center[0] - cellSize * board.size[1] / 2, center[1]- cellSize * board.size[0] / 2];
+    return [Math.floor((event.offsetY - topLeft[1]) / cellSize), Math.floor((event.offsetX - topLeft[0]) / cellSize)];
 }
 
 // export function updateDrawerConfig(config: { cellSize: number }) {

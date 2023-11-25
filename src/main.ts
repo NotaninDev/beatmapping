@@ -1,6 +1,6 @@
 import GUI from "lil-gui"
-import { Board, Direction } from "./logic";
-import { PALETTE, drawBoard } from "./drawer";
+import { Board, Direction, updateMousePosition } from "./logic";
+import { PALETTE, initializeDrawer, drawBoard, getMousePositionOnBoard } from "./drawer";
 
 // Method 1 of loading URLs in Vite: use an import
 // import example_texture_url from "./images/example.png?url"
@@ -65,6 +65,8 @@ board.cells[3][1].boost = true
 board.cells[2][3].mirrorUpRight = false;
 board.cells[3][4].mirrorUpRight = true;
 
+initializeDrawer(40, board);
+
 let last_timestamp = 0;
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
@@ -99,7 +101,7 @@ function every_frame(cur_timestamp: number) {
   // draw
   ctx.fillStyle = PALETTE[5]; // background color
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  drawBoard(ctx, board, [canvas.width / 2, canvas.height / 2], cur_timestamp);
+  drawBoard(ctx, [canvas.width / 2, canvas.height / 2], cur_timestamp);
 
   ctx.drawImage(example_texture, player_pos.x, player_pos.y);
 
@@ -165,6 +167,13 @@ document.addEventListener("keyup", event => {
     default:
       break;
   }
+});
+
+document.addEventListener("mousemove", event => {
+  updateMousePosition(getMousePositionOnBoard(event, [canvas.width / 2, canvas.height / 2]));
+});
+document.addEventListener("mousedown", event => {
+  updateMousePosition(getMousePositionOnBoard(event, [canvas.width / 2, canvas.height / 2]));
 });
 
 // The loading screen is done in HTML so it loads instantly
