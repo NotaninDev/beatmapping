@@ -115,9 +115,6 @@ function every_frame(cur_timestamp: number) {
     uiCenter = getUiCenter();
   }
 
-  // // update drawing config
-  // updateDrawerConfig(CONFIG);
-
   // update
   if (input_state.up) {
     player_pos.y -= delta_time * CONFIG.move_speed;

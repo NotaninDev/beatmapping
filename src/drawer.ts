@@ -126,7 +126,3 @@ function drawUiSlice(context: CanvasRenderingContext2D, topLeft: number[], sheet
         context.restore();
     }
 }
-
-// export function updateDrawerConfig(config: { cellSize: number }) {
-//     cellSize = config.cellSize;
-// }
