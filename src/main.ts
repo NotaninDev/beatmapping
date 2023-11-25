@@ -54,9 +54,6 @@ board.cells[9][5].mirrorUpRight = null;
 board.cells[9][5].bell = 0;
 board.pulsePosition = [4, 9];
 
-board.cells[2][3].mirrorUpRight = false;
-board.cells[3][4].mirrorUpRight = true;
-
 initializeDrawer(40, board);
 
 let timestepNow = 0;
@@ -99,7 +96,15 @@ document.addEventListener("mousemove", event => {
 });
 document.addEventListener("mousedown", event => {
   if (board.inMap(mousePositionOnBoard) && !playingMap) {
-    board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]].boost = !board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]].boost;
+    let cell = board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]];
+    if (toolIsBoost) {
+      cell.boost = !cell.boost;
+    }
+    else {
+      if (cell.mirrorUpRight === null) cell.mirrorUpRight = true;
+      else if (cell.mirrorUpRight) cell.mirrorUpRight = false;
+      else cell.mirrorUpRight = null;
+    }
   }
   if (onMapPlay && !playingSong) {
     playingMap = !playingMap;
