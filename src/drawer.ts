@@ -92,7 +92,7 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
     context.translate(x, y);
     context.rotate(timestepGlobal / 1000);
     context.translate(-x, -y);
-    context.drawImage(pulseTextures[0], topLeft[0] + cellSize * (board.pulsePosition[0] - 0.5), topLeft[1] + cellSize * (board.pulsePosition[1] - 0.5), cellSize * 2, cellSize * 2);
+    // context.drawImage(pulseTextures[0], topLeft[0] + cellSize * (board.pulsePosition[0] - 0.5), topLeft[1] + cellSize * (board.pulsePosition[1] - 0.5), cellSize * 2, cellSize * 2);
     context.translate(x, y);
     context.rotate(timestepGlobal / 1000 * (-1 - 0.6));
     context.translate(-x, -y);
