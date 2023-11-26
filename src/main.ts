@@ -46,7 +46,7 @@ export function updateMousePosition(newPosition: number[]) {
 
 export let playingMap: boolean = false, playingSong: boolean = false;
 export let timestepStart: number = 0;
-export const MILLISECOND_PER_TILE: number = 400;
+export const MILLISECOND_PER_TILE: number = 600;
 
 
 // initialize the board
