@@ -46,28 +46,31 @@ export function updateMousePosition(newPosition: number[]) {
 
 export let playingMap: boolean = false, playingSong: boolean = false;
 export let timestepStart: number = 0;
+export const MILLISECOND_PER_TILE: number = 400;
 
 
 // initialize the board
-let board = new Board([10, 10], [9, 4], Direction.Up);
+let board = new Board([10, 10], [9, 4], Direction.Up, [9, 5]);
 for (let i = 0; i < 10; i++) {
   board.cells[0][i].mirrorUpRight = i % 2 == 0;
   board.cells[9][i].mirrorUpRight = i % 2 == 1;
   board.cells[i][0].mirrorUpRight = i % 2 == 0;
   board.cells[i][9].mirrorUpRight = i % 2 == 1;
 }
-board.cells[9][5].mirrorUpRight = null;
-board.cells[9][5].bell = 0;
-board.cells[9][4].mirrorUpRight = null;
+board.cells[board.pulse.defaultPosition[0]][board.pulse.defaultPosition[1]].mirrorUpRight = null;
+board.cells[board.lastBell[0]][board.lastBell[1]].mirrorUpRight = null;
 
 initializeDrawer(40, board);
 
 let timestepNow = 0;
+let blockInput = false;
 let boardCenter = getBoardCenter();
 let uiCenter = getUiCenter();
 let toolboxCenter = getToolboxCenter();
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
+  blockInput = false;
+
   // in seconds
   let delta_time = (cur_timestamp - timestepNow) / 1000;
   timestepNow = cur_timestamp;
@@ -83,7 +86,13 @@ function every_frame(cur_timestamp: number) {
   }
 
   // update
-  // to do: implement this
+  if (playingMap) {
+    if (board.pulse.updatePosition(timestepNow - timestepStart)) {
+      board.pulse.reset();
+      playingMap = false;
+      blockInput = true;
+    }
+  }
 
   // draw
   ctx.fillStyle = PALETTE[5]; // background color
@@ -101,6 +110,7 @@ document.addEventListener("mousemove", event => {
   updateToolHoverState(event, toolboxCenter);
 });
 document.addEventListener("mousedown", event => {
+  if (blockInput) return;
   if (board.inMap(mousePositionOnBoard) && !playingMap) {
     let cell = board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]];
     if (toolIsBoost) {
@@ -111,18 +121,32 @@ document.addEventListener("mousedown", event => {
       else if (cell.mirrorUpRight) cell.mirrorUpRight = false;
       else cell.mirrorUpRight = null;
     }
+    blockInput = true;
+    return;
   }
   if (onMapPlay && !playingSong) {
     playingMap = !playingMap;
+    if (playingMap) {
+      timestepStart = timestepNow;
+    }
+    else {
+      board.pulse.reset();
+    }
+    blockInput = true;
+    return;
   }
   if (onSongPlay && !playingMap) {
     playingSong = !playingSong;
     if (playingSong) {
       timestepStart = timestepNow;
     }
+    blockInput = true;
+    return;
   }
   if ((onMirrorTool && toolIsBoost || onBoostTool && !toolIsBoost) && !playingMap) {
     switchTool();
+    blockInput = true;
+    return;
   }
 });
 
