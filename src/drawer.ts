@@ -87,18 +87,14 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
     }
 
     // draw pulse
-    let x = topLeft[0] + cellSize * (board.pulse.position[1] + 0.5), y = topLeft[1] + cellSize * (board.pulse.position[0] + 0.5);
+    let x = topLeft[0] + cellSize * (board.pulse.drawPosition[1] + 0.5), y = topLeft[1] + cellSize * (board.pulse.drawPosition[0] + 0.5);
     context.save();
     context.translate(x, y);
-    context.rotate(timestepGlobal / 1000);
+    context.rotate(timestepGlobal / 1000 * (-0.6));
     context.translate(-x, -y);
-    // context.drawImage(pulseTextures[0], topLeft[0] + cellSize * (board.pulse.position[1] - 0.5), topLeft[1] + cellSize * (board.pulse.position[0] - 0.5), cellSize * 2, cellSize * 2);
-    context.translate(x, y);
-    context.rotate(timestepGlobal / 1000 * (-1 - 0.6));
-    context.translate(-x, -y);
-    context.drawImage(pulseTextures[1], topLeft[0] + cellSize * (board.pulse.position[1] - 0.5), topLeft[1] + cellSize * (board.pulse.position[0] - 0.5), cellSize * 2, cellSize * 2);
+    context.drawImage(pulseTextures[1], topLeft[0] + cellSize * (board.pulse.drawPosition[1] - 0.5), topLeft[1] + cellSize * (board.pulse.drawPosition[0] - 0.5), cellSize * 2, cellSize * 2);
     context.restore();
-    context.drawImage(pulseTextures[2], topLeft[0] + cellSize * (board.pulse.position[1] - 0.5), topLeft[1] + cellSize * (board.pulse.position[0] - 0.5), cellSize * 2, cellSize * 2);
+    context.drawImage(pulseTextures[2], topLeft[0] + cellSize * (board.pulse.drawPosition[1] - 0.5), topLeft[1] + cellSize * (board.pulse.drawPosition[0] - 0.5), cellSize * 2, cellSize * 2);
 }
 
 // the return value is [row, column]

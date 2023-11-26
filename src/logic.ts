@@ -26,62 +26,69 @@ class Pulse {
     board: Board;
     defaultPosition: number[]; // row, column
     defaultDirection: Direction;
-    position: number[]; // row, column
+    drawPosition: number[]; // row, column
     logicPosition: number[]; // row, column
     direction: Direction;
-    lastTimestep: number;
     beatCount: number;
+    reachedLastBell: boolean;
 
     constructor(board: Board, position: number[], direction: Direction) {
         this.board = board;
         this.defaultPosition = position;
         this.defaultDirection = direction;
-        this.logicPosition = this.position = position;
+        this.logicPosition = this.drawPosition = position;
         this.direction = direction;
-        this.lastTimestep = 0;
         this.beatCount = -0.5;
+        this.reachedLastBell = false;
     }
 
     reset() {
-        this.logicPosition = this.position = this.defaultPosition;
+        this.logicPosition = this.drawPosition = this.defaultPosition;
         this.direction = this.defaultDirection;
-        this.lastTimestep = 0;
         this.beatCount = -0.5;
+        this.reachedLastBell = false;
     }
 
-    move1Tile() {
+    nextDirection() {
         let cell = this.board.cells[this.logicPosition[0]][this.logicPosition[1]];
         if (cell.hasMirror()) {
             switch (this.direction) {
                 case Direction.Up:
-                    this.direction = cell.mirrorUpRight ? Direction.Right : Direction.Left;
-                    break;
+                    return cell.mirrorUpRight ? Direction.Right : Direction.Left;
                 case Direction.Right:
-                    this.direction = cell.mirrorUpRight ? Direction.Up : Direction.Down;
-                    break;
+                    return cell.mirrorUpRight ? Direction.Up : Direction.Down;
                 case Direction.Down:
-                    this.direction = cell.mirrorUpRight ? Direction.Left : Direction.Right;
-                    break;
+                    return cell.mirrorUpRight ? Direction.Left : Direction.Right;
                 case Direction.Left:
-                    this.direction = cell.mirrorUpRight ? Direction.Down : Direction.Up;
-                    break;
+                    return cell.mirrorUpRight ? Direction.Down : Direction.Up;
             }
         }
+        return this.direction;
+    }
+    move1Tile() {
+        this.direction = this.nextDirection();
         this.logicPosition = [this.logicPosition[0] + directionVectors[this.direction][0], this.logicPosition[1] + directionVectors[this.direction][1]];
     }
 
     // return value is if the pulse reached the last bell
     updatePosition(timestep: number) {
-        while (!(this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1])) {
+        while (!this.reachedLastBell) {
             let nextBeatCount = this.beatCount + (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].boost ? 0.5 : 1);
             if (timestep < nextBeatCount * MILLISECOND_PER_TILE) break;
 
             this.move1Tile();
             this.beatCount = nextBeatCount;
+            this.reachedLastBell = this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1];
         }
-        this.position = this.logicPosition;
-        this.lastTimestep = timestep;
-        return this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1] && timestep >= (this.beatCount + 0.5) * MILLISECOND_PER_TILE;
+        if ((this.reachedLastBell && timestep >= (this.beatCount + 0.5) * MILLISECOND_PER_TILE)) {
+            this.drawPosition = this.logicPosition;
+        }
+        else {
+            let offsetRate = (timestep / MILLISECOND_PER_TILE - this.beatCount) / (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].boost ? 0.5 : 1);
+            let offsetDirection = offsetRate < 0.5 ? this.direction : this.nextDirection();
+            this.drawPosition = [this.logicPosition[0] + directionVectors[offsetDirection][0] * (offsetRate - 0.5), this.logicPosition[1] + directionVectors[offsetDirection][1] * (offsetRate - 0.5)];
+        }
+        return this.reachedLastBell && timestep >= (this.beatCount + 1) * MILLISECOND_PER_TILE;
     }
 }
 
