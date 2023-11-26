@@ -49,18 +49,16 @@ export let timestepStart: number = 0;
 
 
 // initialize the board
-let board = new Board([10, 10]);
+let board = new Board([10, 10], [9, 4], Direction.Up);
 for (let i = 0; i < 10; i++) {
   board.cells[0][i].mirrorUpRight = i % 2 == 0;
   board.cells[9][i].mirrorUpRight = i % 2 == 1;
   board.cells[i][0].mirrorUpRight = i % 2 == 0;
   board.cells[i][9].mirrorUpRight = i % 2 == 1;
 }
-board.cells[9][4].mirrorUpRight = null;
-board.cells[9][4].generator = Direction.Up;
 board.cells[9][5].mirrorUpRight = null;
 board.cells[9][5].bell = 0;
-board.pulsePosition = [4, 9];
+board.cells[9][4].mirrorUpRight = null;
 
 initializeDrawer(40, board);
 

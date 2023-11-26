@@ -19,12 +19,22 @@ class Cell {
     }
 }
 
+class Pulse {
+    position: number[]; // row, column
+    direction: Direction;
+
+    constructor(position: number[], direction: Direction) {
+        this.position = position;
+        this.direction = direction;
+    }
+}
+
 export class Board {
     size: number[]; // row, column
     cells: Cell[][];
-    pulsePosition: number[] = [0, 0];
+    pulse: Pulse;
 
-    constructor(size: number[]) {
+    constructor(size: number[], position: number[], direction: Direction) {
         this.size = size;
         this.cells = [];
         for (let i = 0; i < size[0]; i++) {
@@ -33,6 +43,8 @@ export class Board {
                 this.cells[i][j] = new Cell();
             }
         }
+        this.pulse = new Pulse(position, direction);
+        this.cells[position[0]][position[1]].generator = direction;
     }
 
     inMap(position: number[]) {
