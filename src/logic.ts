@@ -1,3 +1,4 @@
+import { playDrum } from "./audio";
 import { MILLISECOND_PER_TILE } from "./main";
 
 export enum Direction {
@@ -29,6 +30,7 @@ class Pulse {
     drawPosition: number[]; // row, column
     logicPosition: number[]; // row, column
     direction: Direction;
+    lastTimeStep: number;
     beatCount: number;
     reachedLastBell: boolean;
 
@@ -38,6 +40,7 @@ class Pulse {
         this.defaultDirection = direction;
         this.logicPosition = this.drawPosition = position;
         this.direction = direction;
+        this.lastTimeStep = 0;
         this.beatCount = -0.5;
         this.reachedLastBell = false;
     }
@@ -45,6 +48,7 @@ class Pulse {
     reset() {
         this.logicPosition = this.drawPosition = this.defaultPosition;
         this.direction = this.defaultDirection;
+        this.lastTimeStep = 0;
         this.beatCount = -0.5;
         this.reachedLastBell = false;
     }
@@ -88,6 +92,10 @@ class Pulse {
             let offsetDirection = offsetRate < 0.5 ? this.direction : this.nextDirection();
             this.drawPosition = [this.logicPosition[0] + directionVectors[offsetDirection][0] * (offsetRate - 0.5), this.logicPosition[1] + directionVectors[offsetDirection][1] * (offsetRate - 0.5)];
         }
+        if ((!this.reachedLastBell || timestep < (this.beatCount + 0.5) * MILLISECOND_PER_TILE) && Math.floor(timestep / MILLISECOND_PER_TILE - 0.5) > Math.floor(this.lastTimeStep / MILLISECOND_PER_TILE - 0.5)) {
+            playDrum();
+        }
+        this.lastTimeStep = timestep;
         return this.reachedLastBell && timestep >= (this.beatCount + 1) * MILLISECOND_PER_TILE;
     }
 }
