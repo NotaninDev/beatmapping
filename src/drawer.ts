@@ -32,8 +32,8 @@ export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
     cellSize = cellSizeAttr;
     board = boardAttr;
     uiSize = cellSize * 1.5;
-    uiPadding = cellSize * 0.2
-    toolboxPadding = cellSize * 0.4
+    uiPadding = cellSize * 0.2;
+    toolboxPadding = cellSize * 0.4;
 }
 
 
@@ -160,10 +160,38 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     }
     context.drawImage(boostTexture, topLeft[0], topLeft[1], cellSize, cellSize);
 
-    // drawUiSlice(context, topLeft, [playingSong ? 1 : (onMapPlay ? 2 : 0), 0]);
-    // drawUiSlice(context, topLeft, [playingSong ? 1 : (onMapPlay ? 2 : 0), playingMap ? 3 : 2]);
-    // drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [playingMap ? 1 : (onSongPlay ? 2 : 0), 0]);
-    // drawUiSlice(context, [topLeft[0] + uiSize + uiPadding, topLeft[1]], [playingMap ? 1 : (onSongPlay ? 2 : 0), 1], playingSong ? timestepGlobal / 1000 * 0.6 : undefined);
+    context.fillStyle = PALETTE[1];
+    let boxRadius = toolboxPadding * 0.3;
+    let toolboxPaddingRate = 1;
+    let boxOffset = [cellSize + toolboxPadding * (1 + toolboxPaddingRate) / 2 + boxRadius, (cellSize + toolboxPadding * toolboxPaddingRate) / 2 + boxRadius];
+    let toolboxBox = new Path2D();
+    toolboxBox.moveTo(center[0] - boxOffset[0] + boxRadius, center[1] - boxOffset[1]);
+    toolboxBox.arcTo(center[0] - boxOffset[0], center[1] - boxOffset[1], center[0] - boxOffset[0], center[1] - boxOffset[1] + boxRadius, boxRadius);
+    toolboxBox.arcTo(center[0] - boxOffset[0], center[1] + boxOffset[1], center[0] - boxOffset[0] + boxRadius, center[1] + boxOffset[1], boxRadius);
+    toolboxBox.arcTo(center[0] + boxOffset[0], center[1] + boxOffset[1], center[0] + boxOffset[0], center[1] + boxOffset[1] - boxRadius, boxRadius);
+    toolboxBox.arcTo(center[0] + boxOffset[0], center[1] - boxOffset[1], center[0] + boxOffset[0] - boxRadius, center[1] - boxOffset[1], boxRadius);
+    toolboxBox.closePath();
+
+    let boxLineWidth = cellSize * 0.05;
+    boxRadius += boxLineWidth;
+    boxOffset = [boxOffset[0] + boxLineWidth, boxOffset[1] + boxLineWidth];
+    let toolTitleOffset = toolboxPadding * 0.8;
+    toolboxBox.moveTo(center[0] - boxOffset[0] + boxRadius, center[1] - boxOffset[1]);
+    toolboxBox.arcTo(center[0] - boxOffset[0] - toolTitleOffset, center[1] - boxOffset[1], center[0] - boxOffset[0] - toolTitleOffset, center[1] - boxOffset[1] + boxRadius, boxRadius);
+    toolboxBox.arcTo(center[0] - boxOffset[0] - toolTitleOffset, center[1] + boxOffset[1], center[0] - boxOffset[0] - toolTitleOffset + boxRadius, center[1] + boxOffset[1], boxRadius);
+    toolboxBox.arcTo(center[0] + boxOffset[0], center[1] + boxOffset[1], center[0] + boxOffset[0], center[1] + boxOffset[1] - boxRadius, boxRadius);
+    toolboxBox.arcTo(center[0] + boxOffset[0], center[1] - boxOffset[1], center[0] + boxOffset[0] - boxRadius, center[1] - boxOffset[1], boxRadius);
+    toolboxBox.closePath();
+    context.fill(toolboxBox, "evenodd");
+
+    context.font = "12px Ubuntu-M";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillStyle = PALETTE[7];
+    let toolTitle = "TOOLS";
+    for (let i = 0; i < 5; i++) {
+        context.fillText(toolTitle[i], center[0] - (boxOffset[0] - boxLineWidth + (boxLineWidth + toolTitleOffset) / 2), center[1] + cellSize * 0.3 * (-2 + i));
+    }
 }
 
 export let onMirrorTool: boolean = false, onBoostTool: boolean = false;
