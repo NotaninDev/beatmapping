@@ -1,4 +1,4 @@
-let drumSound = new Audio("./sounds/wav.wav");
+let drumSound = new Audio("./sounds/drum.wav");
 export function playDrum() {
     drumSound.play();
 }
