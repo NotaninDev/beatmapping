@@ -60,6 +60,10 @@ for (let i = 0; i < 10; i++) {
 board.cells[board.pulse.defaultPosition[0]][board.pulse.defaultPosition[1]].mirrorUpRight = null;
 board.cells[board.lastBell[0]][board.lastBell[1]].mirrorUpRight = null;
 
+board.cells[3][4].bell = 1;
+board.cells[8][4].bell = 1;
+board.cells[7][5].bell = 1;
+
 initializeDrawer(40, board);
 
 let timestepNow = 0;

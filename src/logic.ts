@@ -80,7 +80,9 @@ class Pulse {
             if (timestep < nextBeatCount * MILLISECOND_PER_TILE) break;
 
             this.move1Tile();
-            playNote(Math.floor(Math.random() * 8));
+            if (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].hasBell()) {
+                playNote(Math.floor(Math.random() * 8));
+            }
             this.beatCount = nextBeatCount;
             this.reachedLastBell = this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1];
         }
