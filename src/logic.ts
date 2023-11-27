@@ -1,4 +1,4 @@
-import { MILLISECOND_PER_TILE, playClick } from "./internal";
+import { MILLISECOND_PER_TILE, playClick, playNote } from "./internal";
 
 export enum Direction {
     Up,
@@ -80,6 +80,7 @@ class Pulse {
             if (timestep < nextBeatCount * MILLISECOND_PER_TILE) break;
 
             this.move1Tile();
+            playNote(Math.floor(Math.random() * 8));
             this.beatCount = nextBeatCount;
             this.reachedLastBell = this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1];
         }
@@ -91,7 +92,8 @@ class Pulse {
             let offsetDirection = offsetRate < 0.5 ? this.direction : this.nextDirection();
             this.drawPosition = [this.logicPosition[0] + directionVectors[offsetDirection][0] * (offsetRate - 0.5), this.logicPosition[1] + directionVectors[offsetDirection][1] * (offsetRate - 0.5)];
         }
-        if ((!this.reachedLastBell || timestep < (this.beatCount + 0.5) * MILLISECOND_PER_TILE) && Math.floor(timestep / MILLISECOND_PER_TILE - 0.5) > Math.floor(this.lastTimeStep / MILLISECOND_PER_TILE - 0.5)) {
+        let muteSound = this.reachedLastBell && timestep >= (this.beatCount + 0.5) * MILLISECOND_PER_TILE;
+        if (!muteSound && Math.floor(timestep / MILLISECOND_PER_TILE - 0.5) > Math.floor(this.lastTimeStep / MILLISECOND_PER_TILE - 0.5)) {
             playClick();
         }
         this.lastTimeStep = timestep;
