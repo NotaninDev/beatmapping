@@ -149,20 +149,21 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     context.fillStyle = PALETTE[playingMap ? 6 : 8];
     context.strokeStyle = PALETTE[8];
     let topLeft: number[] = [center[0] - cellSize - toolboxPadding / 2, center[1] - cellSize / 2];
+    let toolHighlightPadding = toolboxPadding * 0.5;
     if (!toolIsBoost) {
-        context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+        context.fillRect(topLeft[0] - toolHighlightPadding / 2, topLeft[1] - toolHighlightPadding / 2, cellSize + toolHighlightPadding, cellSize + toolHighlightPadding);
     }
     else if (onMirrorTool && !playingMap) {
-        context.strokeRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+        context.strokeRect(topLeft[0] - toolHighlightPadding / 2, topLeft[1] - toolHighlightPadding / 2, cellSize + toolHighlightPadding, cellSize + toolHighlightPadding);
     }
     context.drawImage(mirrorTexture, topLeft[0], topLeft[1], cellSize, cellSize);
 
     topLeft = [center[0] + toolboxPadding / 2, center[1] - cellSize / 2];
     if (toolIsBoost) {
-        context.fillRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+        context.fillRect(topLeft[0] - toolHighlightPadding / 2, topLeft[1] - toolHighlightPadding / 2, cellSize + toolHighlightPadding, cellSize + toolHighlightPadding);
     }
     else if (onBoostTool && !playingMap) {
-        context.strokeRect(topLeft[0] - toolboxPadding / 3, topLeft[1] - toolboxPadding / 3, cellSize + toolboxPadding * 2 / 3, cellSize + toolboxPadding * 2 / 3);
+        context.strokeRect(topLeft[0] - toolHighlightPadding / 2, topLeft[1] - toolHighlightPadding / 2, cellSize + toolHighlightPadding, cellSize + toolHighlightPadding);
     }
     context.drawImage(boostTexture, topLeft[0], topLeft[1], cellSize, cellSize);
 
@@ -181,7 +182,7 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     let boxLineWidth = cellSize * 0.05;
     boxRadius += boxLineWidth;
     boxOffset = [boxOffset[0] + boxLineWidth, boxOffset[1] + boxLineWidth];
-    let toolTitleOffset = toolboxPadding * 0.8;
+    let toolTitleOffset = toolboxPadding * 0.9;
     toolboxBox.moveTo(center[0] - boxOffset[0] + boxRadius, center[1] - boxOffset[1]);
     toolboxBox.arcTo(center[0] - boxOffset[0] - toolTitleOffset, center[1] - boxOffset[1], center[0] - boxOffset[0] - toolTitleOffset, center[1] - boxOffset[1] + boxRadius, boxRadius);
     toolboxBox.arcTo(center[0] - boxOffset[0] - toolTitleOffset, center[1] + boxOffset[1], center[0] - boxOffset[0] - toolTitleOffset + boxRadius, center[1] + boxOffset[1], boxRadius);
@@ -190,7 +191,7 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     toolboxBox.closePath();
     context.fill(toolboxBox, "evenodd");
 
-    context.font = "12px Ubuntu-M";
+    context.font = "15px Ubuntu-M";
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillStyle = PALETTE[7];

@@ -27,7 +27,7 @@ export function imageFromUrl(url: string): Promise<HTMLImageElement> {
 }
 
 function getBoardCenter() {
-  return [canvas.width / 2, canvas.height * 0.45];
+  return [canvas.width / 2, canvas.height * 0.42];
 }
 function getUiCenter() {
   return [canvas.width / 2, canvas.height * 0.89];
@@ -64,7 +64,7 @@ board.cells[3][4].bell = 1;
 board.cells[8][4].bell = 1;
 board.cells[7][5].bell = 1;
 
-initializeDrawer(40, board);
+initializeDrawer(45, board);
 
 let timestepNow = 0;
 let blockInput = false;
