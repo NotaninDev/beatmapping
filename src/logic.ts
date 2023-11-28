@@ -81,7 +81,19 @@ class Pulse {
 
             this.move1Tile();
             if (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].hasBell()) {
-                playNote(Math.floor(Math.random() * 8));
+                let pitchIndex = 7;
+                switch (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].bell) {
+                    case 1:
+                        pitchIndex = 0;
+                        break;
+                    case 2:
+                        pitchIndex = 2;
+                        break;
+                    case 3:
+                        pitchIndex = 3;
+                        break;
+                }
+                playNote(pitchIndex);
             }
             this.beatCount = nextBeatCount;
             this.reachedLastBell = this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1];
