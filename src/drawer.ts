@@ -18,7 +18,7 @@ export const PALETTE = ["#0e0e12", "#1a1a24", "#333346", "#535373", "#8080a4", "
 
 const boostTexture = await imageFromName('boost');
 const mirrorTexture = await imageFromName('mirror');
-const bellTextures = [await imageFromName('bell do'), await imageFromName('bell mi'), await imageFromName('bell fa')];
+const bellTextures = [await imageFromName('bell last'), await imageFromName('bell do'), await imageFromName('bell mi'), await imageFromName('bell fa')];
 const pulseTextures = [await imageFromName('pulse cw'), await imageFromName('pulse ccw'), await imageFromName('pulse core')];
 const UiTexture = await imageFromName('UI');
 
@@ -91,7 +91,7 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
     for (let row = 0; row < board.size[0]; row++) {
         for (let column = 0; column < board.size[1]; column++) {
             if (board.cells[row][column].hasBell()) {
-                context.drawImage(bellTextures[board.cells[row][column].bell! % 3], topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+                context.drawImage(bellTextures[board.cells[row][column].bell!], topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
             }
         }
     }
