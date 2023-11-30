@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -49,6 +49,7 @@ export let timestepStart: number = 0;
 export const MILLISECOND_PER_TILE: number = 600;
 export function stopMap() {
   board.pulse.reset();
+  score.reset();
   playingMap = false;
 }
 export function stopSong() {
@@ -74,8 +75,9 @@ board.cells[6][5].bell = 2;
 board.cells[7][5].bell = 3;
 board.cells[8][5].bell = 3;
 
-initializeDrawer(45, board);
+initializeScore();
 
+initializeDrawer(45, board);
 initializeAudio();
 
 let timestepNow = 0;
@@ -143,13 +145,17 @@ document.addEventListener("mousedown", event => {
     return;
   }
   if (onMapPlay && !playingSong) {
+    if (playingMap && score.isFullScore()) {
+      blockInput = true;
+      return;
+    }
     playingMap = !playingMap;
     if (playingMap) {
       timestepStart = timestepNow + MILLISECOND_PER_TILE / 2;
       startSongTracking(board, -1);
     }
     else {
-      board.pulse.reset();
+      stopMap();
     }
     blockInput = true;
     return;

@@ -101,9 +101,11 @@ class Pulse {
             let failed: boolean;
             if (currentTick >= 0 && currentTick < SONG_ANSWER.length && typeof SONG_ANSWER[currentTick] === "number") {
                 failed = !(pulseMoved && currentCell.hasBell() && currentCell.bell === SONG_ANSWER[currentTick]);
+                score.markScore(!failed);
             }
             else {
                 failed = pulseMoved && currentCell.hasBell();
+                if (failed) score.markScore(false);
             }
             if (failed) playBoing();
         }
@@ -149,4 +151,45 @@ export class Board {
     inMap(position: number[]) {
         return position[0] > 0 && position[0] < this.size[0] - 1 && position[1] > 0 && position[1] < this.size[1] - 1;
     }
+}
+
+class Score {
+    scoreBar: (boolean | null)[];
+    barIndex: number;
+    constructor (size: number) {
+        this.scoreBar = [];
+        for (let i = 0; i < size; i++) {
+            this.scoreBar.push(null);
+        }
+        this.barIndex = 0;
+    }
+
+    reset() {
+        if (this.isFullScore()) return;
+        for (let i = 0; i < this.scoreBar.length; i++) {
+            this.scoreBar[i] = null;
+        }
+        this.barIndex = 0;
+    }
+
+    markScore(result: boolean) {
+        if (this.barIndex == 0 || this.barIndex < this.scoreBar.length && this.scoreBar[this.barIndex - 1]) {
+            this.scoreBar[this.barIndex] = result;
+            this.barIndex++;
+        }
+    }
+
+    isFullScore() {
+        return this.barIndex == this.scoreBar.length && this.scoreBar[this.scoreBar.length - 1];
+    }
+}
+export let score: Score;
+export function initializeScore() {
+    let size: number = 0;
+    SONG_ANSWER.forEach(bell => {
+        if (typeof bell === "number") {
+            size++;
+        }
+    });
+    score = new Score(size);
 }
