@@ -155,9 +155,11 @@ export class Board {
 
 class Score {
     scoreBar: (boolean | null)[];
+    size: number;
     barIndex: number;
     constructor (size: number) {
         this.scoreBar = [];
+        this.size = size;
         for (let i = 0; i < size; i++) {
             this.scoreBar.push(null);
         }
@@ -166,21 +168,21 @@ class Score {
 
     reset() {
         if (this.isFullScore()) return;
-        for (let i = 0; i < this.scoreBar.length; i++) {
+        for (let i = 0; i < this.size; i++) {
             this.scoreBar[i] = null;
         }
         this.barIndex = 0;
     }
 
     markScore(result: boolean) {
-        if (this.barIndex == 0 || this.barIndex < this.scoreBar.length && this.scoreBar[this.barIndex - 1]) {
+        if (this.barIndex == 0 || this.barIndex < this.size && this.scoreBar[this.barIndex - 1]) {
             this.scoreBar[this.barIndex] = result;
             this.barIndex++;
         }
     }
 
     isFullScore() {
-        return this.barIndex == this.scoreBar.length && this.scoreBar[this.scoreBar.length - 1];
+        return this.barIndex == this.size && this.scoreBar[this.size - 1]!;
     }
 }
 export let score: Score;

@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, drawScoreBar } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -27,13 +27,16 @@ export function imageFromUrl(url: string): Promise<HTMLImageElement> {
 }
 
 function getBoardCenter() {
-  return [canvas.width / 2, canvas.height * 0.42];
+  return [canvas.width / 2, canvas.height * 0.41];
 }
 function getUiCenter() {
   return [canvas.width / 2, canvas.height * 0.89];
 }
 function getToolboxCenter() {
   return [canvas.width * 0.3, canvas.height * 0.89];
+}
+function getScoreBarCenter() {
+  return [canvas.width * 0.745, canvas.height * 0.89];
 }
 
 
@@ -49,8 +52,8 @@ export let timestepStart: number = 0;
 export const MILLISECOND_PER_TILE: number = 600;
 export function stopMap() {
   board.pulse.reset();
-  score.reset();
   playingMap = false;
+  winAchieved = score.isFullScore();
 }
 export function stopSong() {
   playingSong = false;
@@ -80,11 +83,21 @@ initializeScore();
 initializeDrawer(45, board);
 initializeAudio();
 
+let boardCenter: number[];
+let uiCenter: number[];
+let toolboxCenter: number[];
+let scoreBarCenter: number[];
+function updateCenter(){
+  boardCenter = getBoardCenter();
+  uiCenter = getUiCenter();
+  toolboxCenter = getToolboxCenter();
+  scoreBarCenter = getScoreBarCenter();
+}
+updateCenter();
+
 let timestepNow = 0;
 let blockInput = false;
-let boardCenter = getBoardCenter();
-let uiCenter = getUiCenter();
-let toolboxCenter = getToolboxCenter();
+let winAchieved = false;
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
   blockInput = false;
@@ -98,9 +111,7 @@ function every_frame(cur_timestamp: number) {
     // .clientWidth is the element's real size, .width is a canvas-specific property: the rendering size
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-    boardCenter = getBoardCenter();
-    uiCenter = getUiCenter();
-    toolboxCenter = getToolboxCenter();
+    updateCenter();
   }
 
   // update
@@ -120,6 +131,7 @@ function every_frame(cur_timestamp: number) {
   drawBoard(ctx, boardCenter, cur_timestamp);
   drawUi(ctx, uiCenter, cur_timestamp - timestepStart);
   drawToolbox(ctx, toolboxCenter);
+  drawScoreBar(ctx, scoreBarCenter);
 
   requestAnimationFrame(every_frame);
 }
@@ -145,7 +157,7 @@ document.addEventListener("mousedown", event => {
     return;
   }
   if (onMapPlay && !playingSong) {
-    if (playingMap && score.isFullScore()) {
+    if (playingMap && score.isFullScore() && !winAchieved) {
       blockInput = true;
       return;
     }
@@ -153,6 +165,7 @@ document.addEventListener("mousedown", event => {
     if (playingMap) {
       timestepStart = timestepNow + MILLISECOND_PER_TILE / 2;
       startSongTracking(board, -1);
+      score.reset();
     }
     else {
       stopMap();

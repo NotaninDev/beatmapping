@@ -38,6 +38,7 @@ function playNote(index: number) {
 }
 
 export const SONG_ANSWER = [1, null, 2, null, 1, null, null, null, null, null, 1, 3, null, 2, 1, null, 1, null, 2, null, 1, null, null, null, null, null, 1, 3, null, 2, 1, null, 0, null] as const;
+// export const SONG_ANSWER = [1, null, 2, null, 1, null, 2, null, 3, null, 3, null, 0, null] as const;
 export function ringBell(bell: number) {
     switch (bell) {
         case 0:

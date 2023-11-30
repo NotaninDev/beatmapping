@@ -1,4 +1,4 @@
-import { Board, mousePositionOnBoard, playingMap, playingSong } from "./internal";
+import { Board, SONG_ANSWER, mousePositionOnBoard, playingMap, playingSong, score } from "./internal";
 
 function lerp(a: number, b: number, t: number) {
     return a * (1 - t) + b * t;
@@ -46,12 +46,16 @@ let board: Board;
 let uiSize: number;
 let uiPadding: number;
 let toolboxPadding: number;
+let scoreSize: number;
+let scorePadding: number;
 export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
     cellSize = cellSizeAttr;
     board = boardAttr;
     uiSize = cellSize * 1.5;
     uiPadding = cellSize * 0.2;
     toolboxPadding = cellSize * 0.4;
+    scoreSize = cellSize * 0.5;
+    scorePadding = scoreSize * 0.3;
     activeNoteWaves = [];
     waveMaxRadius = cellSize;
     waveMinRadius = cellSize * 0.05;
@@ -243,4 +247,51 @@ export function updateToolHoverState(event: MouseEvent, center: number[]) {
 
 export function switchTool() {
     toolIsBoost = !toolIsBoost;
+}
+
+const SCORE_ROW = 3, SCORE_COLUMN = 7;
+export function drawScoreBar(context: CanvasRenderingContext2D, center: number[]) {
+    // draw the bar
+    context.fillStyle = PALETTE[1];
+    let barOffset = [(scoreSize + scorePadding) * SCORE_COLUMN / 2 + scorePadding / 3, (scoreSize + scorePadding) * SCORE_ROW / 2 + scorePadding / 3];
+    let scoreBar = new Path2D();
+    let scoreRadius = scorePadding / 2;
+    scoreBar.moveTo(center[0] - barOffset[0] + scoreRadius, center[1] - barOffset[1]);
+    scoreBar.arcTo(center[0] - barOffset[0], center[1] - barOffset[1], center[0] - barOffset[0], center[1] - barOffset[1] + scoreRadius, scoreRadius);
+    scoreBar.arcTo(center[0] - barOffset[0], center[1] + barOffset[1], center[0] - barOffset[0] + scoreRadius, center[1] + barOffset[1], scoreRadius);
+    scoreBar.arcTo(center[0] + barOffset[0], center[1] + barOffset[1], center[0] + barOffset[0], center[1] + barOffset[1] - scoreRadius, scoreRadius);
+    scoreBar.arcTo(center[0] + barOffset[0], center[1] - barOffset[1], center[0] + barOffset[0] - scoreRadius, center[1] - barOffset[1], scoreRadius);
+    scoreBar.closePath();
+    context.fill(scoreBar);
+
+    // draw each score
+    let topLeft: number[] = [center[0] - (scoreSize + scorePadding) * SCORE_COLUMN / 2 + scorePadding / 2, center[1] - (scoreSize + scorePadding) * SCORE_ROW / 2 + scorePadding / 2];
+    context.fillStyle = PALETTE[7];
+    for (let i = 0; i < score.size; i++) {
+        const row = Math.floor(i / SCORE_COLUMN), column = i % SCORE_COLUMN;
+        const scoreTopLeft = [topLeft[0] + (scoreSize + scorePadding) * column, topLeft[1] + (scoreSize + scorePadding) * row];
+        context.fillRect(scoreTopLeft[0], scoreTopLeft[1], scoreSize, scoreSize);
+
+        if (i < score.barIndex) {
+            if (score.scoreBar[i]) {
+                context.strokeStyle = PALETTE[8];
+                context.lineWidth = 5;
+                let check = new Path2D();
+                check.moveTo(scoreTopLeft[0] + scoreSize / 6, scoreTopLeft[1] + scoreSize / 2);
+                check.lineTo(scoreTopLeft[0] + scoreSize * 2 / 5, scoreTopLeft[1] + scoreSize - scoreSize / 4);
+                check.lineTo(scoreTopLeft[0] + scoreSize - scoreSize / 5, scoreTopLeft[1] + scoreSize / 5);
+                context.stroke(check);
+            }
+            else {
+                context.strokeStyle = PALETTE[2];
+                context.lineWidth = 5;
+                let cross = new Path2D();
+                cross.moveTo(scoreTopLeft[0] + scoreSize / 5, scoreTopLeft[1] + scoreSize / 5);
+                cross.lineTo(scoreTopLeft[0] + scoreSize - scoreSize / 5, scoreTopLeft[1] + scoreSize - scoreSize / 5);
+                cross.moveTo(scoreTopLeft[0] + scoreSize / 5, scoreTopLeft[1] + scoreSize - scoreSize / 5);
+                cross.lineTo(scoreTopLeft[0] + scoreSize - scoreSize / 5, scoreTopLeft[1] + scoreSize / 5);
+                context.stroke(cross);
+            }
+        }
+    }
 }
