@@ -12,6 +12,14 @@ export function playClick() {
     clickSound.play();
 }
 
+let boingSound = new Audio("./sounds/boing.wav");
+const BOING_DELAY = 30;
+export function playBoing() {
+    setTimeout(() => {
+        boingSound.play();
+    }, BOING_DELAY);
+}
+
 const noteFrequencies = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77, 1046.50] as const;
 function playNote(index: number) {
     const oscillator = new OscillatorNode(audioContext, {
