@@ -1,4 +1,4 @@
-import { MILLISECOND_PER_TILE, stopSong } from "./internal";
+import { Board, MILLISECOND_PER_TILE, NoteWave, activeNoteWaves, stopSong, timestepStart } from "./internal";
 
 const audioContext = new window.AudioContext();
 
@@ -59,8 +59,10 @@ class SongTracker {
     }
 }
 let songTracker: SongTracker;
+let board: Board;
 
-export function startSongTracking(initialTick?: number) {
+export function startSongTracking(boardAttr: Board, initialTick?: number) {
+    board = boardAttr;
     songTracker = new SongTracker(initialTick);
 }
 export function trackAnswer(timestep: number) {
@@ -70,6 +72,13 @@ export function trackAnswer(timestep: number) {
         }
         else if (songTracker.lastTick >= 0 && SONG_ANSWER[songTracker.lastTick] !== null) {
             ringBell(SONG_ANSWER[songTracker.lastTick]!);
+            for (let row = 0; row < board.size[0]; row++) {
+                for (let column = 0; column < board.size[1]; column++) {
+                    if (board.cells[row][column].hasBell() && board.cells[row][column].bell === SONG_ANSWER[songTracker.lastTick]) {
+                        activeNoteWaves.push(new NoteWave([row, column], timestep + timestepStart))
+                    }
+                }
+            }
         }
         if (songTracker.lastTick % 2 == 0) {
             playClick();

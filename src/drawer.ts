@@ -33,9 +33,9 @@ let waveMaxRadius: number, waveMinRadius: number;
 export class NoteWave {
     position: number[]; // row, column
     timestepStart: number
-    constructor(position: number[], timestep: number) {
+    constructor(position: number[], timestepGlobal: number) {
         this.position = position;
-        this.timestepStart = timestep;
+        this.timestepStart = timestepGlobal;
     }
 }
 export let activeNoteWaves: NoteWave[];

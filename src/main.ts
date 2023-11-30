@@ -159,7 +159,7 @@ document.addEventListener("mousedown", event => {
     playingSong = !playingSong;
     if (playingSong) {
       timestepStart = timestepNow;
-      startSongTracking(-1);
+      startSongTracking(board, -1);
     }
     blockInput = true;
     return;
