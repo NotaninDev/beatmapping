@@ -180,14 +180,19 @@ export function updateUiHoverState(event: MouseEvent, center: number[]) {
     onSongPlay = Math.sqrt(Math.pow(event.offsetX - uiCenter[0], 2) + Math.pow(event.offsetY - uiCenter[1], 2)) < uiSize / 2;
 }
 
-export let toolIsBoost: boolean = true;
+export enum Tool {
+    Mirror,
+    Boost,
+    Bell
+}
+export let currentTool: Tool = Tool.Boost;
 export function drawToolbox(context: CanvasRenderingContext2D, center: number[]) {
     context.fillStyle = PALETTE[playingMap ? 6 : 8];
     context.strokeStyle = PALETTE[8];
     context.lineWidth = 1.8;
     let topLeft: number[] = [center[0] - cellSize - toolboxPadding / 2, center[1] - cellSize / 2];
     let toolHighlightPadding = toolboxPadding * 0.5;
-    if (!toolIsBoost) {
+    if (currentTool == Tool.Mirror) {
         context.fillRect(topLeft[0] - toolHighlightPadding / 2, topLeft[1] - toolHighlightPadding / 2, cellSize + toolHighlightPadding, cellSize + toolHighlightPadding);
     }
     else if (onMirrorTool && !playingMap) {
@@ -196,7 +201,7 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     context.drawImage(mirrorTexture, topLeft[0], topLeft[1], cellSize, cellSize);
 
     topLeft = [center[0] + toolboxPadding / 2, center[1] - cellSize / 2];
-    if (toolIsBoost) {
+    if (currentTool == Tool.Boost) {
         context.fillRect(topLeft[0] - toolHighlightPadding / 2, topLeft[1] - toolHighlightPadding / 2, cellSize + toolHighlightPadding, cellSize + toolHighlightPadding);
     }
     else if (onBoostTool && !playingMap) {
@@ -245,8 +250,8 @@ export function updateToolHoverState(event: MouseEvent, center: number[]) {
     onBoostTool = event.offsetX >= center[0] + toolboxPadding * (0.5 - 1 / 3) && event.offsetX <= center[0] + cellSize + toolboxPadding * (0.5 + 1 / 3) && event.offsetY >= center[1] - cellSize / 2 - toolboxPadding / 3 && event.offsetY <= center[1] + cellSize / 2 + toolboxPadding / 3;
 }
 
-export function switchTool() {
-    toolIsBoost = !toolIsBoost;
+export function switchTool(tool: Tool) {
+    currentTool = tool;
 }
 
 const SCORE_ROW = 3, SCORE_COLUMN = 7;

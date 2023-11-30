@@ -18,7 +18,7 @@ class Cell {
         return this.mirrorUpRight !== null;
     }
     hasBell(): boolean {
-        return this.bell !== null;
+        return typeof this.bell === "number";
     }
 }
 

@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, drawScoreBar } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, currentTool, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, drawScoreBar, Tool } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -145,13 +145,20 @@ document.addEventListener("mousedown", event => {
   if (blockInput) return;
   if (board.inMap(mousePositionOnBoard) && !playingMap) {
     let cell = board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]];
-    if (toolIsBoost) {
-      cell.boost = !cell.boost;
-    }
-    else {
-      if (cell.mirrorUpRight === null) cell.mirrorUpRight = true;
-      else if (cell.mirrorUpRight) cell.mirrorUpRight = false;
-      else cell.mirrorUpRight = null;
+    switch (currentTool) {
+      case Tool.Mirror:
+        if (cell.mirrorUpRight === null) cell.mirrorUpRight = true;
+        else if (cell.mirrorUpRight) cell.mirrorUpRight = false;
+        else cell.mirrorUpRight = null;
+        break;
+      case Tool.Boost:
+        cell.boost = !cell.boost;
+        break;
+      case Tool.Bell:
+        if (!cell.hasBell()) cell.bell = 1;
+        else if (cell.bell === 3) cell.bell = null;
+        else cell.bell!++;
+        break;
     }
     blockInput = true;
     return;
@@ -182,10 +189,24 @@ document.addEventListener("mousedown", event => {
     blockInput = true;
     return;
   }
-  if ((onMirrorTool && toolIsBoost || onBoostTool && !toolIsBoost) && !playingMap) {
-    switchTool();
+  if (onMirrorTool && currentTool != Tool.Mirror && !playingMap) {
+    switchTool(Tool.Mirror);
     blockInput = true;
     return;
+  }
+  if (onBoostTool && currentTool != Tool.Boost && !playingMap) {
+    switchTool(Tool.Boost);
+    blockInput = true;
+    return;
+  }
+});
+document.addEventListener("keydown", event => {
+  if (event.repeat || blockInput || playingMap) return;
+  switch (event.code) {
+    case "KeyB":
+      switchTool(Tool.Bell);
+      blockInput = true;
+      break;
   }
 });
 
