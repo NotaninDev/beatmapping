@@ -112,8 +112,6 @@ let winAchieved = false;
 function every_frame(cur_timestamp: number) {
   blockInput = false;
 
-  // in seconds
-  let delta_time = (cur_timestamp - timestepNow) / 1000;
   timestepNow = cur_timestamp;
 
   // handle resize
@@ -151,7 +149,7 @@ document.addEventListener("mousemove", event => {
   updateUiHoverState(event, uiCenter);
   updateToolHoverState(event, toolboxCenter);
 });
-document.addEventListener("mousedown", event => {
+document.addEventListener("mousedown", _ => {
   if (blockInput) return;
   if (board.inMap(mousePositionOnBoard) && !playingMap) {
     let cell = board.cells[mousePositionOnBoard[0]][mousePositionOnBoard[1]];

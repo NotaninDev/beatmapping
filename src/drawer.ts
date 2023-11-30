@@ -1,4 +1,4 @@
-import { Board, SONG_ANSWER, mousePositionOnBoard, playingMap, playingSong, score } from "./internal";
+import { Board, mousePositionOnBoard, playingMap, playingSong, score } from "./internal";
 
 function lerp(a: number, b: number, t: number) {
     return a * (1 - t) + b * t;
