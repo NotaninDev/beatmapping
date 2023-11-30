@@ -37,8 +37,7 @@ function playNote(index: number) {
     oscillator.stop(audioContext.currentTime + 0.5 * 0.9 * MILLISECOND_PER_TILE / 1000);
 }
 
-export const SONG_ANSWER = [1, null, 2, null, 1, null, null, null, null, null, 1, 3, null, 2, 1, null, 1, null, 2, null, 1, null, null, null, null, null, 1, 3, null, 2, 1, null, 0, null] as const;
-// export const SONG_ANSWER = [1, null, 2, null, 1, null, 2, null, 3, null, 3, null, 0, null] as const;
+export const SONG_ANSWER = [1, null, 2, null, 1, null, null, null, null, null, 1, 3, null, 2, 1, null, 1, null, 2, null, 1, null, null, null, null, null, 1, 3, null, 2, 1, null, 1, null, null, 2, null, null, 1, null, null, 3, null, null, 2, null, null, 1, 0, null] as const;
 export function ringBell(bell: number) {
     switch (bell) {
         case 0:
