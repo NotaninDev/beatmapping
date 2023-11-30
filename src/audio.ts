@@ -60,7 +60,7 @@ class SongTracker {
     tick(timestep: number) {
         let currentTick = Math.floor(timestep * 2 / MILLISECOND_PER_TILE);
         if (currentTick > this.lastTick) {
-            this.lastTick = currentTick;
+            this.lastTick++;
             return true;
         }
         return false;
@@ -83,13 +83,20 @@ export function trackAnswer(timestep: number) {
             for (let row = 0; row < board.size[0]; row++) {
                 for (let column = 0; column < board.size[1]; column++) {
                     if (board.cells[row][column].hasBell() && board.cells[row][column].bell === SONG_ANSWER[songTracker.lastTick]) {
-                        activeNoteWaves.push(new NoteWave([row, column], timestep + timestepStart))
+                        activeNoteWaves.push(new NoteWave([row, column], timestep + timestepStart));
                     }
                 }
             }
         }
-        if (songTracker.lastTick % 2 == 0) {
+        if (isClickFrame()) {
             playClick();
         }
     }
 }
+// returns true if the tracker ticked
+export function tickMap(timestep: number) {
+    return songTracker.tick(timestep);
+}
+
+export function isClickFrame() { return songTracker.lastTick % 2 == 0; }
+export function getCurrentTick() { return songTracker.lastTick; }

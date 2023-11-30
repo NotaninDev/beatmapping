@@ -67,16 +67,12 @@ for (let i = 0; i < 10; i++) {
 board.cells[board.pulse.defaultPosition[0]][board.pulse.defaultPosition[1]].mirrorUpRight = null;
 board.cells[board.lastBell[0]][board.lastBell[1]].mirrorUpRight = null;
 
-board.cells[3][4].bell = 1;
 board.cells[8][4].bell = 2;
-board.cells[7][5].bell = 3;
-board.cells[1][6].bell = 1;
-board.cells[6][5].bell = 2;
-board.cells[4][1].bell = 3;
-board.cells[1][2].bell = 1;
-board.cells[8][7].bell = 2;
-board.cells[7][2].bell = 3;
 board.cells[7][4].bell = 1;
+board.cells[6][4].bell = 1;
+board.cells[6][5].bell = 2;
+board.cells[7][5].bell = 3;
+board.cells[8][5].bell = 3;
 
 initializeDrawer(45, board);
 
@@ -147,7 +143,8 @@ document.addEventListener("mousedown", event => {
   if (onMapPlay && !playingSong) {
     playingMap = !playingMap;
     if (playingMap) {
-      timestepStart = timestepNow;
+      timestepStart = timestepNow + MILLISECOND_PER_TILE / 2;
+      startSongTracking(board, -1);
     }
     else {
       board.pulse.reset();
