@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -47,6 +47,13 @@ export function updateMousePosition(newPosition: number[]) {
 export let playingMap: boolean = false, playingSong: boolean = false;
 export let timestepStart: number = 0;
 export const MILLISECOND_PER_TILE: number = 600;
+export function stopMap() {
+  board.pulse.reset();
+  playingMap = false;
+}
+export function stopSong() {
+  playingSong = false;
+}
 
 
 // initialize the board
@@ -99,10 +106,12 @@ function every_frame(cur_timestamp: number) {
   // update
   if (playingMap) {
     if (board.pulse.updatePosition(timestepNow - timestepStart)) {
-      board.pulse.reset();
-      playingMap = false;
+      stopMap();
       blockInput = true;
     }
+  }
+  if (playingSong) {
+    trackAnswer(timestepNow - timestepStart);
   }
 
   // draw
@@ -150,6 +159,7 @@ document.addEventListener("mousedown", event => {
     playingSong = !playingSong;
     if (playingSong) {
       timestepStart = timestepNow;
+      startSongTracking(-1);
     }
     blockInput = true;
     return;

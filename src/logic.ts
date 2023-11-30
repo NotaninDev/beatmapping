@@ -1,4 +1,4 @@
-import { MILLISECOND_PER_TILE, NoteWave, activeNoteWaves, playClick, playNote, timestepStart } from "./internal";
+import { MILLISECOND_PER_TILE, NoteWave, activeNoteWaves, playClick, ringBell, timestepStart } from "./internal";
 
 export enum Direction {
     Up,
@@ -81,19 +81,7 @@ class Pulse {
 
             this.move1Tile();
             if (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].hasBell()) {
-                let pitchIndex = 7;
-                switch (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].bell) {
-                    case 1:
-                        pitchIndex = 0;
-                        break;
-                    case 2:
-                        pitchIndex = 2;
-                        break;
-                    case 3:
-                        pitchIndex = 3;
-                        break;
-                }
-                playNote(pitchIndex);
+                ringBell(this.board.cells[this.logicPosition[0]][this.logicPosition[1]].bell!);
                 activeNoteWaves.push(new NoteWave([this.logicPosition[0], this.logicPosition[1]], timestep + timestepStart));
             }
             this.beatCount = nextBeatCount;
