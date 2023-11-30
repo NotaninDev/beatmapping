@@ -12,11 +12,16 @@ export function playClick() {
     clickSound.play();
 }
 
-let boingSound = new Audio("./sounds/boing.wav");
+let boingSounds: HTMLAudioElement[];
 const BOING_DELAY = 30;
 export function playBoing() {
     setTimeout(() => {
-        boingSound.play();
+        if (!boingSounds[0].paused) {
+            boingSounds[0].pause();
+            boingSounds[0].load();
+        }
+        else boingSounds[0].play();
+        [boingSounds[0], boingSounds[1]] = [boingSounds[1], boingSounds[0]];
     }, BOING_DELAY);
 }
 
@@ -68,6 +73,12 @@ class SongTracker {
 }
 let songTracker: SongTracker;
 let board: Board;
+
+export function initializeAudio() {
+    boingSounds = [new Audio("./sounds/boing.wav"), new Audio("./sounds/boing.wav")];
+    boingSounds[0].volume = 0.8;
+    boingSounds[1].volume = 0.8;
+}
 
 export function startSongTracking(boardAttr: Board, initialTick?: number) {
     board = boardAttr;

@@ -1,4 +1,4 @@
-import { MILLISECOND_PER_TILE, NoteWave, activeNoteWaves, getCurrentTick, isClickFrame, playClick, ringBell, tickMap, timestepStart } from "./internal";
+import { MILLISECOND_PER_TILE, NoteWave, SONG_ANSWER, activeNoteWaves, getCurrentTick, isClickFrame, playBoing, playClick, ringBell, tickMap, timestepStart } from "./internal";
 
 export enum Direction {
     Up,
@@ -76,25 +76,36 @@ class Pulse {
     // return value is if the pulse reached the last bell
     updatePosition(timestep: number) {
         let clickNow = false;
+        let currentCell = this.board.cells[this.logicPosition[0]][this.logicPosition[1]];
         while (tickMap(timestep)) {
-            let nextBeatCount = this.beatCount + (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].boost ? 0.5 : 1);
+            let nextBeatCount = this.beatCount + (currentCell.boost ? 0.5 : 1);
             if (typeof(this.beatCountEnd) === "number" && nextBeatCount >= this.beatCountEnd) break;
             clickNow ||= isClickFrame();
-            let pulseMoved = nextBeatCount <= getCurrentTick() / 2;
+            let currentTick = getCurrentTick();
+            let pulseMoved = nextBeatCount <= currentTick / 2;
+
+            if (pulseMoved) {
+                this.move1Tile();
+                currentCell = this.board.cells[this.logicPosition[0]][this.logicPosition[1]];
+                if (currentCell.hasBell()) {
+                    ringBell(currentCell.bell!);
+                    activeNoteWaves.push(new NoteWave([this.logicPosition[0], this.logicPosition[1]], timestep + timestepStart));
+                }
+                this.beatCount = nextBeatCount;
+                if (this.beatCountEnd === null && this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1]) {
+                    this.beatCountEnd = nextBeatCount + 1;
+                }
+            }
 
             // check the song
-
-            if (!pulseMoved) continue;
-
-            this.move1Tile();
-            if (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].hasBell()) {
-                ringBell(this.board.cells[this.logicPosition[0]][this.logicPosition[1]].bell!);
-                activeNoteWaves.push(new NoteWave([this.logicPosition[0], this.logicPosition[1]], timestep + timestepStart));
+            let failed: boolean;
+            if (currentTick >= 0 && currentTick < SONG_ANSWER.length && typeof SONG_ANSWER[currentTick] === "number") {
+                failed = !(pulseMoved && currentCell.hasBell() && currentCell.bell === SONG_ANSWER[currentTick]);
             }
-            this.beatCount = nextBeatCount;
-            if (this.beatCountEnd === null && this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1]) {
-                this.beatCountEnd = nextBeatCount + 1;
+            else {
+                failed = pulseMoved && currentCell.hasBell();
             }
+            if (failed) playBoing();
         }
         if (clickNow) playClick();
 
@@ -103,7 +114,8 @@ class Pulse {
             this.drawPosition = this.logicPosition;
         }
         else {
-            let offsetRate = (timestep / MILLISECOND_PER_TILE - this.beatCount) / (this.board.cells[this.logicPosition[0]][this.logicPosition[1]].boost ? 0.5 : 1);
+            currentCell = this.board.cells[this.logicPosition[0]][this.logicPosition[1]];
+            let offsetRate = (timestep / MILLISECOND_PER_TILE - this.beatCount) / (currentCell.boost ? 0.5 : 1);
             let offsetDirection = offsetRate < 0.5 ? this.direction : this.nextDirection();
             this.drawPosition = [this.logicPosition[0] + directionVectors[offsetDirection][0] * (offsetRate - 0.5), this.logicPosition[1] + directionVectors[offsetDirection][1] * (offsetRate - 0.5)];
         }

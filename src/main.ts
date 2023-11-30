@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, toolIsBoost, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio } from "./internal";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
@@ -67,14 +67,16 @@ for (let i = 0; i < 10; i++) {
 board.cells[board.pulse.defaultPosition[0]][board.pulse.defaultPosition[1]].mirrorUpRight = null;
 board.cells[board.lastBell[0]][board.lastBell[1]].mirrorUpRight = null;
 
-board.cells[8][4].bell = 2;
-board.cells[7][4].bell = 1;
+board.cells[8][4].bell = 1;
+board.cells[7][4].bell = 2;
 board.cells[6][4].bell = 1;
 board.cells[6][5].bell = 2;
 board.cells[7][5].bell = 3;
 board.cells[8][5].bell = 3;
 
 initializeDrawer(45, board);
+
+initializeAudio();
 
 let timestepNow = 0;
 let blockInput = false;
