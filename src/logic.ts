@@ -1,4 +1,4 @@
-import { MILLISECOND_PER_TILE, playClick, playNote } from "./internal";
+import { MILLISECOND_PER_TILE, NoteWave, activeNoteWaves, playClick, playNote, timestepStart } from "./internal";
 
 export enum Direction {
     Up,
@@ -94,6 +94,7 @@ class Pulse {
                         break;
                 }
                 playNote(pitchIndex);
+                activeNoteWaves.push(new NoteWave([this.logicPosition[0], this.logicPosition[1]], timestep + timestepStart));
             }
             this.beatCount = nextBeatCount;
             this.reachedLastBell = this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1];

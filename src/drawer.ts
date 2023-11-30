@@ -1,5 +1,9 @@
 import { Board, mousePositionOnBoard, playingMap, playingSong } from "./internal";
 
+function lerp(a: number, b: number, t: number) {
+    return a * (1 - t) + b * t;
+}
+
 function imageFromName(fileName: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -23,6 +27,19 @@ const pulseTextures = [await imageFromName('pulse cw'), await imageFromName('pul
 const UiTexture = await imageFromName('UI');
 
 
+const NOTE_WAVE_LIFETIME = 400 // in milliseconds
+let waveMaxLineWidth: number = 5;
+let waveMaxRadius: number, waveMinRadius: number;
+export class NoteWave {
+    position: number[]; // row, column
+    timestepStart: number
+    constructor(position: number[], timestep: number) {
+        this.position = position;
+        this.timestepStart = timestep;
+    }
+}
+export let activeNoteWaves: NoteWave[];
+
 
 let cellSize: number;
 let board: Board;
@@ -35,6 +52,9 @@ export function initializeDrawer(cellSizeAttr: number, boardAttr: Board) {
     uiSize = cellSize * 1.5;
     uiPadding = cellSize * 0.2;
     toolboxPadding = cellSize * 0.4;
+    activeNoteWaves = [];
+    waveMaxRadius = cellSize;
+    waveMinRadius = cellSize * 0.05;
 }
 
 
@@ -87,15 +107,6 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
         }
     }
 
-    // draw bells
-    for (let row = 0; row < board.size[0]; row++) {
-        for (let column = 0; column < board.size[1]; column++) {
-            if (board.cells[row][column].hasBell()) {
-                context.drawImage(bellTextures[board.cells[row][column].bell!], topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
-            }
-        }
-    }
-
     // draw pulse
     let x = topLeft[0] + cellSize * (board.pulse.drawPosition[1] + 0.5), y = topLeft[1] + cellSize * (board.pulse.drawPosition[0] + 0.5);
     context.save();
@@ -105,6 +116,27 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
     context.drawImage(pulseTextures[1], topLeft[0] + cellSize * (board.pulse.drawPosition[1] - 0.5), topLeft[1] + cellSize * (board.pulse.drawPosition[0] - 0.5), cellSize * 2, cellSize * 2);
     context.restore();
     context.drawImage(pulseTextures[2], topLeft[0] + cellSize * (board.pulse.drawPosition[1] - 0.5), topLeft[1] + cellSize * (board.pulse.drawPosition[0] - 0.5), cellSize * 2, cellSize * 2);
+
+    while (activeNoteWaves.length > 0 && timestepGlobal >= activeNoteWaves[0].timestepStart + NOTE_WAVE_LIFETIME) {
+        activeNoteWaves.shift();
+    }
+    context.strokeStyle = PALETTE[8];
+    activeNoteWaves.forEach(noteWave => {
+        let t = (timestepGlobal - noteWave.timestepStart) / NOTE_WAVE_LIFETIME;
+        context.lineWidth = lerp(waveMaxLineWidth, 0, t);
+        context.beginPath();
+        context.arc(topLeft[0] + cellSize * (noteWave.position[1] + 0.5), topLeft[1] + cellSize * (noteWave.position[0] + 0.5), lerp(waveMinRadius, waveMaxRadius, t), 0, Math.PI * 2);
+        context.stroke();
+    });
+
+    // draw bells
+    for (let row = 0; row < board.size[0]; row++) {
+        for (let column = 0; column < board.size[1]; column++) {
+            if (board.cells[row][column].hasBell()) {
+                context.drawImage(bellTextures[board.cells[row][column].bell!], topLeft[0] + cellSize * column, topLeft[1] + cellSize * row, cellSize, cellSize);
+            }
+        }
+    }
 }
 
 // the return value is [row, column]
@@ -148,6 +180,7 @@ export let toolIsBoost: boolean = true;
 export function drawToolbox(context: CanvasRenderingContext2D, center: number[]) {
     context.fillStyle = PALETTE[playingMap ? 6 : 8];
     context.strokeStyle = PALETTE[8];
+    context.lineWidth = 1.8;
     let topLeft: number[] = [center[0] - cellSize - toolboxPadding / 2, center[1] - cellSize / 2];
     let toolHighlightPadding = toolboxPadding * 0.5;
     if (!toolIsBoost) {
