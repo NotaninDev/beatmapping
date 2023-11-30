@@ -222,7 +222,8 @@ document.addEventListener("keydown", event => {
 const loading_screen_element = document.querySelector<HTMLDivElement>("#loading_screen")!;
 
 // By the time we run this code, everything's loaded and we're ready to start
-loading_screen_element.innerText = "Press to start!";
+loading_screen_element.innerText = "Click to start!";
+
 // It's good practice to wait for user input, and also required if your game has sound
 document.addEventListener("pointerdown", _event => {
   loading_screen_element.style.opacity = "0";
