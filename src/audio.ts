@@ -20,7 +20,9 @@ export function playBoing() {
             boingSounds[0].pause();
             boingSounds[0].load();
         }
-        else boingSounds[0].play();
+        else {
+            boingSounds[0].play();
+        }
         [boingSounds[0], boingSounds[1]] = [boingSounds[1], boingSounds[0]];
     }, BOING_DELAY);
 }

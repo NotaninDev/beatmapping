@@ -92,7 +92,6 @@ board.cells[8][5].bell = 1;
 initializeScore();
 
 initializeDrawer(45, board);
-initializeAudio();
 
 let boardCenter: number[];
 let uiCenter: number[];
@@ -229,5 +228,6 @@ loading_screen_element.innerText = "Press to start!";
 // It's good practice to wait for user input, and also required if your game has sound
 document.addEventListener("pointerdown", _event => {
   loading_screen_element.style.opacity = "0";
+  initializeAudio();
   requestAnimationFrame(every_frame);
 }, { once: true });
