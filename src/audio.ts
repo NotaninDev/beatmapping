@@ -1,8 +1,10 @@
 import { Board, MILLISECOND_PER_TILE, NoteWave, activeNoteWaves, stopSong, timestepStart } from "./internal";
+import clickUrl from "./sounds/click.wav";
+import boingUrl from "./sounds/boing.wav";
 
 const audioContext = new window.AudioContext();
 
-let clickSound = new Audio("./sounds/click.wav");
+let clickSound: HTMLAudioElement;
 export function playClick() {
     clickSound.play();
 }
@@ -72,9 +74,10 @@ let songTracker: SongTracker;
 let board: Board;
 
 export function initializeAudio() {
-    boingSounds = [new Audio("./sounds/boing.wav"), new Audio("./sounds/boing.wav")];
-    boingSounds[0].volume = 0.8;
-    boingSounds[1].volume = 0.8;
+    clickSound = new Audio(clickUrl);
+    boingSounds = [new Audio(boingUrl), new Audio(boingUrl)];
+    // boingSounds[0].volume = 0.8;
+    // boingSounds[1].volume = 0.8;
 }
 
 export function startSongTracking(boardAttr: Board, initialTick?: number) {
