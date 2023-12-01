@@ -87,10 +87,6 @@ class Pulse {
             if (pulseMoved) {
                 this.move1Tile();
                 currentCell = this.board.cells[this.logicPosition[0]][this.logicPosition[1]];
-                if (currentCell.hasBell()) {
-                    ringBell(currentCell.bell!);
-                    activeNoteWaves.push(new NoteWave([this.logicPosition[0], this.logicPosition[1]], timestep + timestepStart));
-                }
                 this.beatCount = nextBeatCount;
                 if (this.beatCountEnd === null && this.logicPosition[0] == this.board.lastBell[0] && this.logicPosition[1] == this.board.lastBell[1]) {
                     this.beatCountEnd = nextBeatCount + 1;
@@ -108,6 +104,11 @@ class Pulse {
                 if (failed) score.markScore(false);
             }
             if (failed) playBoing();
+
+            if (pulseMoved && currentCell.hasBell()) {
+                ringBell(currentCell.bell!);
+                activeNoteWaves.push(new NoteWave([this.logicPosition[0], this.logicPosition[1]], !failed, timestep + timestepStart));
+            }
         }
         if (clickNow) playClick();
 

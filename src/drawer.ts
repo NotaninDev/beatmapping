@@ -32,9 +32,11 @@ let waveMaxLineWidth: number = 5;
 let waveMaxRadius: number, waveMinRadius: number;
 export class NoteWave {
     position: number[]; // row, column
-    timestepStart: number
-    constructor(position: number[], timestepGlobal: number) {
+    correct: boolean;
+    timestepStart: number;
+    constructor(position: number[], correct: boolean, timestepGlobal: number) {
         this.position = position;
+        this.correct = correct;
         this.timestepStart = timestepGlobal;
     }
 }
@@ -124,8 +126,8 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
     while (activeNoteWaves.length > 0 && timestepGlobal >= activeNoteWaves[0].timestepStart + NOTE_WAVE_LIFETIME) {
         activeNoteWaves.shift();
     }
-    context.strokeStyle = PALETTE[8];
     activeNoteWaves.forEach(noteWave => {
+        context.strokeStyle = PALETTE[noteWave.correct ? 8 : 1];
         let t = (timestepGlobal - noteWave.timestepStart) / NOTE_WAVE_LIFETIME;
         context.lineWidth = lerp(waveMaxLineWidth, 0, t);
         context.beginPath();
