@@ -260,8 +260,21 @@ export function updateToolHoverState(event: MouseEvent, center: number[]) {
     onBoostTool = event.offsetX >= center[0] + toolboxPadding * (0.5 - 1 / 3) && event.offsetX <= center[0] + cellSize + toolboxPadding * (0.5 + 1 / 3) && event.offsetY >= center[1] - cellSize / 2 - toolboxPadding / 3 && event.offsetY <= center[1] + cellSize / 2 + toolboxPadding / 3;
 }
 
-export function switchTool(tool: Tool) {
-    currentTool = tool;
+export function switchTool(tool?: Tool) {
+    if (tool !== undefined) currentTool = tool;
+    else {
+        switch (currentTool) {
+            case Tool.Mirror:
+                currentTool = Tool.Boost;
+                break;
+            case Tool.Boost:
+                currentTool = Tool.Bell;
+                break;
+            case Tool.Bell:
+                currentTool = Tool.Mirror;
+                break;
+        }
+    }
 }
 
 const SCORE_ROW = 3, SCORE_COLUMN = 7;

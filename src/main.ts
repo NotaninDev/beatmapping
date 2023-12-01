@@ -80,7 +80,7 @@ board.cells[8][5].bell = 1;
 
 initializeScore();
 
-initializeDrawer(45, board);
+initializeDrawer(90, board);
 
 let boardCenter: number[];
 let uiCenter: number[];
@@ -134,10 +134,10 @@ function every_frame(cur_timestamp: number) {
   ctx.fillStyle = PALETTE[5]; // background color
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawBoard(ctx, boardCenter, cur_timestamp);
-  drawUi(ctx, uiCenter, cur_timestamp - timestepStart);
-  drawToolbox(ctx, toolboxCenter);
-  drawScoreBar(ctx, scoreBarCenter);
-  if (winAchieved) drawCredits(ctx, creditsCenter);
+  // drawUi(ctx, uiCenter, cur_timestamp - timestepStart);
+  // drawToolbox(ctx, toolboxCenter);
+  // drawScoreBar(ctx, scoreBarCenter);
+  // if (winAchieved) drawCredits(ctx, creditsCenter);
 
   requestAnimationFrame(every_frame);
 }
@@ -211,7 +211,7 @@ document.addEventListener("keydown", event => {
   if (event.repeat || blockInput || playingMap) return;
   switch (event.code) {
     case "KeyB":
-      switchTool(Tool.Bell);
+      switchTool();
       blockInput = true;
       break;
   }
