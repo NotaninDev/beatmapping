@@ -3,13 +3,13 @@ import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMous
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
 const ctx = canvas.getContext("2d")!;
 
-let fontUbuntu = new FontFace("Ubuntu-M", "url(./fonts/ubuntu-font-family-0.83/Ubuntu-M.ttf)");
-fontUbuntu.load().then((font) => {
-  document.fonts.add(font);
-  console.log(`font ready: ${font.family}`);
-}, (result) => {
-  console.log(`failed loading font Ubuntu: ${result}`);
-});
+// let fontUbuntu = new FontFace("Ubuntu-M", "url(./fonts/ubuntu-font-family-0.83/Ubuntu-M.ttf)");
+// fontUbuntu.load().then((font) => {
+//   document.fonts.add(font);
+//   console.log(`font ready: ${font.family}`);
+// }, (result) => {
+//   console.log(`failed loading font Ubuntu: ${result}`);
+// });
 
 // from https://www.fabiofranchino.com/log/load-an-image-with-javascript-using-await/
 export function imageFromUrl(url: string): Promise<HTMLImageElement> {
