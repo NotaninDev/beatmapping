@@ -1,4 +1,4 @@
-import { Board, mousePositionOnBoard, playingMap, playingSong, score } from "./internal";
+import { Board, editorMode, mousePositionOnBoard, playingMap, playingSong, score } from "./internal";
 
 function lerp(a: number, b: number, t: number) {
     return a * (1 - t) + b * t;
@@ -243,6 +243,13 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     let toolTitle = "TOOLS";
     for (let i = 0; i < 5; i++) {
         context.fillText(toolTitle[i], center[0] - (boxOffset[0] - boxLineWidth + (boxLineWidth + toolTitleOffset) / 2), center[1] + cellSize * 0.3 * (-2 + i));
+    }
+
+    if (editorMode) {
+        context.font = "20px Ubuntu-M";
+        context.fillStyle = PALETTE[1];
+        context.fillText("EDITOR", center[0] - boxOffset[0] - cellSize * 1.8, center[1] + cellSize * 0.24);
+        context.fillText("MODE", center[0] - boxOffset[0] - cellSize * 1.8, center[1] - cellSize * 0.24);
     }
 }
 

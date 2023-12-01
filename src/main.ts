@@ -96,6 +96,12 @@ function updateCenter(){
 }
 updateCenter();
 
+export let editorMode = false;
+function setEditorMode (flag: boolean) {
+  editorMode = flag;
+  if (flag && !winAchieved) score.reset();
+}
+
 let timestepNow = 0;
 let blockInput = true;
 let winAchieved = false;
@@ -158,6 +164,7 @@ document.addEventListener("mousedown", _ => {
         if (!cell.hasBell()) cell.bell = 1;
         else if (cell.bell === 3) cell.bell = null;
         else cell.bell!++;
+        setEditorMode(true);
         break;
     }
     blockInput = true;

@@ -1,4 +1,4 @@
-import { MILLISECOND_PER_TILE, NoteWave, SONG_ANSWER, activeNoteWaves, getCurrentTick, isClickFrame, playBoing, playClick, ringBell, tickMap, timestepStart } from "./internal";
+import { MILLISECOND_PER_TILE, NoteWave, SONG_ANSWER, activeNoteWaves, editorMode, getCurrentTick, isClickFrame, playBoing, playClick, ringBell, tickMap, timestepStart } from "./internal";
 
 export enum Direction {
     Up,
@@ -94,16 +94,18 @@ class Pulse {
             }
 
             // check the song
-            let failed: boolean;
-            if (currentTick >= 0 && currentTick < SONG_ANSWER.length && typeof SONG_ANSWER[currentTick] === "number") {
-                failed = !(pulseMoved && currentCell.hasBell() && currentCell.bell === SONG_ANSWER[currentTick]);
-                score.markScore(!failed);
+            let failed: boolean = false;
+            if (!editorMode) {
+                if (currentTick >= 0 && currentTick < SONG_ANSWER.length && typeof SONG_ANSWER[currentTick] === "number") {
+                    failed = !(pulseMoved && currentCell.hasBell() && currentCell.bell === SONG_ANSWER[currentTick]);
+                    score.markScore(!failed);
+                }
+                else {
+                    failed = pulseMoved && currentCell.hasBell();
+                    if (failed) score.markScore(false);
+                }
+                if (failed) playBoing();
             }
-            else {
-                failed = pulseMoved && currentCell.hasBell();
-                if (failed) score.markScore(false);
-            }
-            if (failed) playBoing();
 
             if (pulseMoved && currentCell.hasBell()) {
                 ringBell(currentCell.bell!);
