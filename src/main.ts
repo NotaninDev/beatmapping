@@ -69,6 +69,7 @@ board.cells[3][5].bell = 1;
 board.cells[4][2].bell = 1;
 board.cells[4][6].bell = 1;
 board.cells[5][2].bell = 2;
+board.cells[5][3].bell = 2;
 board.cells[5][4].bell = 2;
 board.cells[6][2].bell = 3;
 board.cells[6][5].bell = 3;
@@ -77,6 +78,7 @@ board.cells[7][3].bell = 1;
 board.cells[7][4].bell = 2;
 board.cells[8][4].bell = 1;
 board.cells[8][5].bell = 1;
+board.cells[8][6].bell = 1;
 
 initializeScore();
 
