@@ -37,14 +37,14 @@ export function playBoing() {
 }
 
 const noteFrequencies = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77, 1046.50] as const;
-function playNote(index: number) {
+function playNote(index: number, delay?: number) {
     const oscillator = new OscillatorNode(audioContext, {
         type: "sine",
         frequency: noteFrequencies[index]
     });
     const gainNode = new GainNode(audioContext, {gain: 0.12});
     oscillator.connect(gainNode).connect(audioContext.destination);
-    oscillator.start(audioContext.currentTime);
+    oscillator.start(audioContext.currentTime + (delay === undefined ? 0 : delay));
     oscillator.stop(audioContext.currentTime + 0.5 * 0.9 * MILLISECOND_PER_TILE / 1000);
 }
 
@@ -52,7 +52,9 @@ export const SONG_ANSWER = [1, null, 2, null, 1, null, null, null, null, null, 1
 export function ringBell(bell: number) {
     switch (bell) {
         case 0:
-            playNote(7);
+            playNote(2);
+            playNote(4, 0.008);
+            playNote(7, 0.016);
             break;
         case 1:
             playNote(0);
