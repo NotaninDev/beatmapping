@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, currentTool, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, drawScoreBar, Tool, drawCredits } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, currentTool, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, drawScoreBar, Tool, drawCredits, imageFromName } from "./internal";
 import ubuntuUrl from "./fonts/ubuntu-font-family-0.83/Ubuntu-M.ttf";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
@@ -11,21 +11,6 @@ fontUbuntu.load().then((font) => {
 }, (result) => {
   console.log(`failed loading font Ubuntu: ${result}`);
 });
-
-// from https://www.fabiofranchino.com/log/load-an-image-with-javascript-using-await/
-export function imageFromUrl(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'Anonymous'; // to avoid CORS if used with Canvas
-    img.src = url
-    img.onload = () => {
-      resolve(img);
-    }
-    img.onerror = e => {
-      reject(e);
-    }
-  })
-}
 
 function getBoardCenter() {
   return [canvas.width / 2, canvas.height * 0.41];
@@ -112,7 +97,7 @@ function updateCenter(){
 updateCenter();
 
 let timestepNow = 0;
-let blockInput = false;
+let blockInput = true;
 let winAchieved = false;
 // main loop; game logic lives here
 function every_frame(cur_timestamp: number) {
@@ -225,15 +210,29 @@ document.addEventListener("keydown", event => {
   }
 });
 
+const soundTexture = await imageFromName('sound icon');
+soundTexture.setAttribute("width", "128");
+soundTexture.setAttribute("width", "128");
+
 // The loading screen is done in HTML so it loads instantly
 const loading_screen_element = document.querySelector<HTMLDivElement>("#loading_screen")!;
+const firstLineElement = document.querySelector<HTMLDivElement>("#first_line")!;
+const soundIconElement = document.querySelector<HTMLDivElement>("#sound_icon")!;
+const secondLineElement = document.querySelector<HTMLDivElement>("#second_line")!;
 
 // By the time we run this code, everything's loaded and we're ready to start
-loading_screen_element.innerText = "Click to start!";
+firstLineElement.innerText = "Play with the sound ON";
+secondLineElement.innerText = "Click to start!";
+
+soundIconElement.appendChild(soundTexture);
 
 // It's good practice to wait for user input, and also required if your game has sound
 document.addEventListener("pointerdown", _event => {
   loading_screen_element.style.opacity = "0";
+  firstLineElement.remove();
+  secondLineElement.remove();
+  soundIconElement.remove();
+  soundTexture.remove();
   initializeAudio();
   requestAnimationFrame(every_frame);
 }, { once: true });

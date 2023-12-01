@@ -4,7 +4,7 @@ function lerp(a: number, b: number, t: number) {
     return a * (1 - t) + b * t;
 }
 
-function imageFromName(fileName: string): Promise<HTMLImageElement> {
+export function imageFromName(fileName: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.crossOrigin = 'Anonymous'; // to avoid CORS if used with Canvas

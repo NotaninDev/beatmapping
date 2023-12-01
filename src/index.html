@@ -32,7 +32,7 @@
             background-color: #333346;
             font-size: larger;
             text-align: center;
-            line-height: 90vh;
+            /* line-height: 90vh; */
             color: #c1c1d2;
 
             position: absolute;
@@ -43,6 +43,36 @@
             user-select: none;
         }
 
+        #first_line {
+            top: 30vh;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            height: 100%;
+
+            position: absolute;
+        }
+        #sound_icon {
+            display: block;
+
+            top: 40vh;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            height: 100%;
+
+            position: absolute;
+        }
+        #second_line {
+            top: 70vh;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            height: 100%;
+
+            position: absolute;
+        }
+
         canvas:focus {
             outline: none;
         }
@@ -51,7 +81,13 @@
 </head>
 
 <body>
-    <div id="loading_screen">Loading...</div>
+    <div id="loading_screen">
+        <div id="first_line"></div>
+        <div id="sound_icon"></div>
+        <div id="second_line">
+            Loading...
+        </div>
+    </div>
     <canvas id="game_canvas"></canvas>
 </body>
 
