@@ -25,6 +25,7 @@ const mirrorTexture = await imageFromName('mirror');
 const bellTextures = [await imageFromName('bell last'), await imageFromName('bell do'), await imageFromName('bell mi'), await imageFromName('bell fa')];
 const pulseTextures = [await imageFromName('pulse cw'), await imageFromName('pulse ccw'), await imageFromName('pulse core')];
 const UiTexture = await imageFromName('UI');
+const NotanTexture = await imageFromName('notan bird');
 
 
 const NOTE_WAVE_LIFETIME = 400 // in milliseconds
@@ -301,4 +302,16 @@ export function drawScoreBar(context: CanvasRenderingContext2D, center: number[]
             }
         }
     }
+}
+
+export function drawCredits(context: CanvasRenderingContext2D, center: number[]) {
+    context.font = "20px Ubuntu-M";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillStyle = PALETTE[1];
+    context.fillText("Thank you for", center[0], center[1]);
+    context.fillText("playing!", center[0], center[1] + cellSize * 0.5);
+
+    let birdSize = cellSize * 1.2;
+    context.drawImage(NotanTexture, center[0] - birdSize / 2, center[1] - birdSize / 2 - cellSize * 0.8, birdSize, birdSize);
 }
