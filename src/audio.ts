@@ -4,24 +4,36 @@ import boingUrl from "./sounds/boing.wav";
 
 const audioContext = new window.AudioContext();
 
-let clickSound: HTMLAudioElement;
+let clickBuffer: AudioBuffer, boingBuffer: AudioBuffer;
+async function loadAudio() {
+    try {
+        let response = await fetch(clickUrl);
+        clickBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
+        response = await fetch(boingUrl);
+        boingBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
+    }
+    catch (error: unknown) {
+        let message = "unknown";
+        if (typeof error === "string") message = error;
+        else if (error instanceof Error) message = error.message;
+        console.error(`Unable to fetch the audio file. Error: ${message}`);
+    }
+}
 export function playClick() {
-    clickSound.play();
+    const source = audioContext.createBufferSource();
+    source.buffer = clickBuffer;
+    const gainNode = new GainNode(audioContext, {gain: 0.63});
+    source.connect(gainNode).connect(audioContext.destination);
+    source.start();
 }
 
-let boingSounds: HTMLAudioElement[];
-const BOING_DELAY = 30;
+const BOING_DELAY = 36;
 export function playBoing() {
-    setTimeout(() => {
-        if (!boingSounds[0].paused) {
-            boingSounds[0].pause();
-            boingSounds[0].load();
-        }
-        else {
-            boingSounds[0].play();
-        }
-        [boingSounds[0], boingSounds[1]] = [boingSounds[1], boingSounds[0]];
-    }, BOING_DELAY);
+    const source = audioContext.createBufferSource();
+    source.buffer = boingBuffer;
+    const gainNode = new GainNode(audioContext, {gain: 0.75});
+    source.connect(gainNode).connect(audioContext.destination);
+    source.start(audioContext.currentTime + BOING_DELAY / 1000);
 }
 
 const noteFrequencies = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77, 1046.50] as const;
@@ -74,8 +86,7 @@ let songTracker: SongTracker;
 let board: Board;
 
 export function initializeAudio() {
-    clickSound = new Audio(clickUrl);
-    boingSounds = [new Audio(boingUrl), new Audio(boingUrl)];
+    loadAudio();
     // boingSounds[0].volume = 0.8;
     // boingSounds[1].volume = 0.8;
 }
