@@ -233,8 +233,7 @@ export function drawToolbox(context: CanvasRenderingContext2D, center: number[])
     toolboxBox.closePath();
     context.fill(toolboxBox, "evenodd");
 
-    // context.font = "15px Ubuntu-M";
-    context.font = "15px sans";
+    context.font = "15px Ubuntu-M";
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillStyle = PALETTE[7];
