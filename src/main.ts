@@ -208,10 +208,27 @@ document.addEventListener("mousedown", _ => {
   }
 });
 document.addEventListener("keydown", event => {
-  if (event.repeat || blockInput || playingMap) return;
+  if (event.repeat || blockInput) return;
   switch (event.code) {
     case "KeyB":
+      if (playingMap) return;
       switchTool();
+      blockInput = true;
+      break;
+    case "KeyP":
+      if (playingMap && score.isFullScore() && !winAchieved) {
+        blockInput = true;
+        return;
+      }
+      playingMap = !playingMap;
+      if (playingMap) {
+        timestepStart = timestepNow + MILLISECOND_PER_TILE / 2;
+        startSongTracking(board, -1);
+        score.reset();
+      }
+      else {
+        stopMap();
+      }
       blockInput = true;
       break;
   }
