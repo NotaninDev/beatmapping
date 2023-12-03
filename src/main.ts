@@ -80,7 +80,7 @@ board.cells[8][5].bell = 1;
 
 initializeScore();
 
-initializeDrawer(90, board);
+initializeDrawer(45, board);
 
 let boardCenter: number[];
 let uiCenter: number[];
