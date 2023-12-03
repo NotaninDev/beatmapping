@@ -26,7 +26,7 @@ const bellTextures = [await imageFromName('bell last'), await imageFromName('bel
 const pulseTextures = [await imageFromName('pulse cw'), await imageFromName('pulse ccw'), await imageFromName('pulse core')];
 
 
-const NOTE_WAVE_LIFETIME = 400 // in milliseconds
+const NOTE_WAVE_LIFETIME = 450 // in milliseconds
 let waveMaxLineWidth: number = 5;
 let waveMaxRadius: number, waveMinRadius: number;
 export class NoteWave {
@@ -112,7 +112,7 @@ export function drawBoard(context: CanvasRenderingContext2D, center: number[], t
     let x = topLeft[0] + cellSize * (board.pulse.drawPosition[1] + 0.5), y = topLeft[1] + cellSize * (board.pulse.drawPosition[0] + 0.5);
     context.save();
     context.translate(x, y);
-    context.rotate(timestepGlobal / 1000 * (-0.6));
+    context.rotate(timestepGlobal / 1000 * (-0.9));
     context.translate(-x, -y);
     context.drawImage(pulseTextures[1], topLeft[0] + cellSize * (board.pulse.drawPosition[1] - 0.5), topLeft[1] + cellSize * (board.pulse.drawPosition[0] - 0.5), cellSize * 2, cellSize * 2);
     context.restore();

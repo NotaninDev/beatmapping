@@ -38,7 +38,7 @@ export function updateMousePosition(newPosition: number[]) {
 
 export let playingMap: boolean = false, playingSong: boolean = false;
 export let timestepStart: number = 0;
-export const MILLISECOND_PER_TILE: number = 600;
+export const MILLISECOND_PER_TILE: number = 540;
 export function stopMap() {
   board.pulse.reset();
   playingMap = false;
