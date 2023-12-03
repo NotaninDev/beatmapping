@@ -1,4 +1,4 @@
-import { Board, Direction, PALETTE, initializeDrawer, drawBoard, drawUi, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, drawToolbox, updateToolHoverState, onMirrorTool, currentTool, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, drawScoreBar, Tool, drawCredits, imageFromName } from "./internal";
+import { Board, Direction, PALETTE, initializeDrawer, drawBoard, getMousePositionOnBoard, updateUiHoverState, onMapPlay, onSongPlay, updateToolHoverState, onMirrorTool, currentTool, switchTool, onBoostTool, startSongTracking, trackAnswer, initializeAudio, initializeScore, score, Tool, imageFromName } from "./internal";
 import ubuntuUrl from "./fonts/ubuntu-font-family-0.83/Ubuntu-M.ttf";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#game_canvas")!;
@@ -21,12 +21,12 @@ function getUiCenter() {
 function getToolboxCenter() {
   return [canvas.width * 0.3, canvas.height * 0.89];
 }
-function getScoreBarCenter() {
-  return [canvas.width * 0.745, canvas.height * 0.89];
-}
-function getCreditsCenter() {
-  return [canvas.width * 0.88, canvas.height * 0.73];
-}
+// function getScoreBarCenter() {
+//   return [canvas.width * 0.745, canvas.height * 0.89];
+// }
+// function getCreditsCenter() {
+//   return [canvas.width * 0.88, canvas.height * 0.73];
+// }
 
 
 
@@ -85,14 +85,14 @@ initializeDrawer(45, board);
 let boardCenter: number[];
 let uiCenter: number[];
 let toolboxCenter: number[];
-let scoreBarCenter: number[];
-let creditsCenter: number[];
+// let scoreBarCenter: number[];
+// let creditsCenter: number[];
 function updateCenter(){
   boardCenter = getBoardCenter();
   uiCenter = getUiCenter();
   toolboxCenter = getToolboxCenter();
-  scoreBarCenter = getScoreBarCenter();
-  creditsCenter = getCreditsCenter();
+  // scoreBarCenter = getScoreBarCenter();
+  // creditsCenter = getCreditsCenter();
 }
 updateCenter();
 
