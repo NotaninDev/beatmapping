@@ -188,7 +188,7 @@ export enum Tool {
     Boost,
     Bell
 }
-export let currentTool: Tool = Tool.Boost;
+export let currentTool: Tool = Tool.Mirror;
 export function drawToolbox(context: CanvasRenderingContext2D, center: number[]) {
     context.fillStyle = PALETTE[playingMap ? 6 : 8];
     context.strokeStyle = PALETTE[8];
