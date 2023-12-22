@@ -94,7 +94,7 @@ class Pulse {
             }
 
             // check the song
-            let failed: boolean = false;
+            let failed: boolean = false, alreadyFailed = score.isFail();
             if (!editorMode) {
                 if (currentTick >= 0 && currentTick < SONG_ANSWER.length && typeof SONG_ANSWER[currentTick] === "number") {
                     failed = !(pulseMoved && currentCell.hasBell() && currentCell.bell === SONG_ANSWER[currentTick]);
@@ -104,7 +104,7 @@ class Pulse {
                     failed = pulseMoved && currentCell.hasBell();
                     if (failed) score.markScore(false);
                 }
-                if (failed) playBoing();
+                if (failed && !alreadyFailed) playBoing();
             }
 
             if (pulseMoved && currentCell.hasBell()) {
@@ -182,6 +182,10 @@ class Score {
             this.scoreBar[this.barIndex] = result;
             this.barIndex++;
         }
+    }
+
+    isFail() {
+        return this.barIndex > 0 && !this.scoreBar[this.barIndex - 1];
     }
 
     isFullScore() {
