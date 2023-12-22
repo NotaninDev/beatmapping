@@ -26,6 +26,9 @@ dist-ssr
 # Visual Studio cache directory
 .vs/
 
+# VS Code workspace
+*.code-workspace
+
 # Gradle cache directory
 .gradle/
 
