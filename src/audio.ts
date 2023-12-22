@@ -22,7 +22,7 @@ async function loadAudio() {
 export function playClick() {
     const source = audioContext.createBufferSource();
     source.buffer = clickBuffer;
-    const gainNode = new GainNode(audioContext, {gain: 0.63});
+    const gainNode = new GainNode(audioContext, {gain: 0.42});
     source.connect(gainNode).connect(audioContext.destination);
     source.start();
 }
@@ -31,7 +31,7 @@ const BOING_DELAY = 36;
 export function playBoing() {
     const source = audioContext.createBufferSource();
     source.buffer = boingBuffer;
-    const gainNode = new GainNode(audioContext, {gain: 0.75});
+    const gainNode = new GainNode(audioContext, {gain: 0.7});
     source.connect(gainNode).connect(audioContext.destination);
     source.start(audioContext.currentTime + BOING_DELAY / 1000);
 }
